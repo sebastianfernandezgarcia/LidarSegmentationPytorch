@@ -32,7 +32,7 @@ d_in = 3
 num_classes = 8 #14
 
 model = RandLANet(d_in, num_classes, 16, 4, device)
-model.load_state_dict(torch.load('runs\checkpoint_11.pth')['model_state_dict'])  #'runs/2020-04-11_17:03/checkpoint_10.pth'
+model.load_state_dict(torch.load('runs\checkpoint_47.pth')['model_state_dict'])  #'runs/2020-04-11_17:03/checkpoint_10.pth'
 model.eval()
 
 """

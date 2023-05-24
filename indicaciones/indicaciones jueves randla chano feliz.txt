@@ -1,0 +1,146 @@
+ranla funcionando con datos de aerolaser
+se supone que se traga todo mas eficientemente.
+
+
+en prepare dataset 2, esta si ejecutar, esta el dataset crudo normalizado
+porque la prueba que hice se lo pase crudo, pero no parecia tirar, vamos a ver si normalizando va.
+
+en prepare dataset3 que esta a punto de acabar esta el dataset normalizado y puntos downsampleado intentando inventar el balanceo de las clases pero no se como resultara..
+solo se ha ejecurado el train, faltaria el test
+
+en training esta los de dataos balanceados dos pero conb batchsize 2 y con supuestamente 32k de puntos... tampoco se como ira esto...
+en el 8 estan datos no tan balanceados, mas normales
+
+tienen buena pinta, voy a poner el 8 y lo dejo entrenando a ver que pasa
+
+probar con el de 8, el de 2 que es balanceao por mi
+y vovler a probar con el crudo normalizado.. sin nromalizar etc...
+
+lo dejo con el 8, a 50k puntos que es lo que pone en el paper...
+
+
+
+viernes, mientras creo un dataset nuevo, voy a poner a entrenar con mis propios datos balanceados con 50k... esta puesto a 16k
+
+
+ya esta la voxelizacion. epico. ahora vamos a cambiar la estructura del dataloader.
+Este accederá a los datasets cortados solo.
+
+GUARDAR Y LOCALIZAR PROGRAMA QUE PARTE EL DATASET BIEN
+
+En el dataloader pondremos la reduccion de puntos a voxeles por parametro y la normalizacion
+
+Voy a crear un dataVox.py. "recordar que estamos en moviendo al servidor kopa ranlanet."
+################################################
+El train se esta ejecutando en el ENV RandLaNetPruebas
+El test se hace en RanKaNetPruebas2  ------------- Ya se hace tambien en RandLaNetPruebas
+los prepare dataset en pytorch geometric
+#################################################
+lo haré todo para el train y mientras ponemos a entrenar, adaptamos el test
+
+Cristina dice de bajar el learning rate una vez estamos ya bloqueados con algunas clases... parece buena idea.
+pero revisar el squeduler y tal, comparar con la de pointnet++ que funcionaba.
+
+En preparedatset3.py está la nueva particion medio medio hecha.
+preparedatset3 funciona para el train
+
+voy a copiar en preparedatset4 y ponerlo todo bien
+
+preparardatset4 está listo. por parametro o dfault, tipo de dataset y la ruta de los las originales.
+a aprtir de ahora usar este para partir bien. solo parte. recuerda que los dataloadrs son los que downsamplean y normalizan
+
+
+
+ahora mismo, el dataset solo partido esta en moviedo al servidor Pointnet2Aerolaser nueva particion
+y en el dataloder de randla esta harcodeada la ruta para ver si funciona.
+
+
+Paro el entrenamiento de datset balanceado 2 (por mi metodo)
+llego hasta peso43, lo llamo 43_mydownsample por si despus se puede recuperar para seguir entrenando.
+
+ y vamos a intenta correr el nuevo. cambiar el dataloaader de train a dataVox
+
+he movido la nueva particion a kopa. cuidado que esta en pointnet2aerolaser y en kopa. hay muchas cosas duplicadas. ir borrando segun vaya funcionando.
+
+datavox es un problema,porque parece que tarda mas y es que claro... esta procesando dentro del train, ademas problema que mismachea dims, quiza el replace true del random eataba solucionando eso.
+
+voy a sacar el procesamiento de datavox a un fichero a parte que sea preparedatset5. Recuerda que en el 4 esta solo el split. y en el 5 estará todo todo.
+
+en nuevaparticion estan los crudos partidos
+en nuevaparticion2 estan normalizados, escalados voxelizados etc.
+
+el preparedataset5 por algun motivo no esta funcionando. vamos a crear un preparedatset 6 que lea de una carpeta los crudos y los guarde en subcarpeta procesados.
+
+vale esta medio hardocdeado y hay que poner las carpetas a mano y tal pero el preparedataset6 sirve para dentro de una carpeta con el dataset (nuevaparticion) si
+tienes creada una subcarpeta prcoesados, guarda ahi los procesados. de tal manera. solo cambiar y meter /procesados en el dataloader!
+
+parece que entrena.
+
+Recapitulando:
+-preparedatset4 hace solo el split
+-preparedatset6 coge el split y si hay una subcarpeta llamada proceados, mete ahi los procesados finales.
+En el train se llama al dataloader original, alli coge de la subcarpeta procesados y hace un downsampling a 16k, que es lo que ya estaba realmente. pero 
+hace downsampling de 16 sobre 16 y creo que el replace true, lo completa para que tengan la misma dim y no explote.
+
+
+
+estaba entrenando con lo nuevo pero en validatione xplota.
+bajo puntos 1024 para probar rapido y ver que pasa y comaprar com lo buenoç
+
+
+cambiado en data.py y puesto dataloader antifuio
+puesto print labels .shape para ver que pasa
+
+
+preparadetaset6.py ahora tiene que pasarle el split que preparas. ya estan todos los datos preparados
+
+actualizacion con los weights de las corss entropy ole ole ole
+mirar en chatgpt lo darle pesos inversamente proporcional a la frecuencia. 
+preparar un modulo que basicamente coge todo le dataset, calcula las clases ve la ocurrencia de cada una y da el valor.. 
+un mix de lo de chatgpt con el utils.tools que ya habia. ole ole ole
+
+claves productividad: dormir, viaje, vivir, dos pantallas, motivicacion, salir, no monotonia. etc.
+
+
+el tools.py tiene IOU from confusions
+
+
+ahora voy a hacer una prueba a normalizar entre -1 y 1 y sampleados a 50k
+
+resulta que claro en el dataloader si estoy en dataset 50k... dataloader hace random cada vex que carga, entonces son puntos distintos...
+hacer que en dataloader no se haga nada random
+
+preparo datset 4096 fijo y quitamos el random.
+
+en procesados a secas esta 16384 voxelizados entre 0 y 1
+
+en procesado50-1_1 estan 50k voxelizado entre -1 y 1 todavia se hace random en dataloader para completar
+
+en procesado4K-1_1 están 4096 voxelizzdos replace true -1 y 1 y ya hay que quitar random en dataloader
+
+
+train y test de randlanet se hacen en RandLaNetPruebas presuntamente los splits tambien
+todo randla en randlanetpruebas
+
+pytorchgeometric para pointnet2
+
+
+ya el de 50K -1,1 esta listo para ser usado. voy a cambair el fichero train.py(el data loader) epro el dataset ya esta para poner
+
+cambions a bueno, ahora tdo se hace en la carpta girhub y esta mucho mejor organizado
+
+en pantalla izquierda tengo 2 training.
+training izquierda con scheduler 0.95 empezado en 0.001
+
+y en la derecha lr a 0.00025 fijo. parada la derecha.
+derecha 0.01 bajando a 90
+
+izquierda 0.01 bajando 95 cada 5 epocas
+derecha 0.01 bajando 0.5 cada 5 epocas
+
+
+
+VALE IZQUIERDA EN EPCH 40 EMPEZAMOS A VER ALGO QUE NO SOLO SUELO.
+config: 0.95 base lr 0.001, cada 3. se supone entre -1 y 1 y los pesos tienen el +1 es decir estan por debajo de 1 todo
+
+derecha 0.95 0.001 cada 5, entre 0,1 16384 pesos tienen el +0.5

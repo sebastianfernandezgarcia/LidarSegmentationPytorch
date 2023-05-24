@@ -112,12 +112,14 @@ def train(args):
     )
 
     print('Computing weights...', end='\t')
+
+    """
     samples_per_class = np.array(cfg.class_weights)
 
     n_samples = torch.tensor(cfg.class_weights, dtype=torch.float, device=args.gpu)
     ratio_samples = n_samples / n_samples.sum()
     weights = 1 / (ratio_samples + 0.02)
-
+    """
     label_counts = {}
 
     for _, labels in tqdm(train_loader):
@@ -134,23 +136,29 @@ def train(args):
 
     label_counts_list = [count for _, count in label_counts.items()]
     n_muestras = torch.tensor(label_counts_list, dtype=torch.float, device=args.gpu)
+    #print(n_muestras)
+    #time.sleep(5)
     ratio_muestras = n_muestras / n_muestras.sum()
-    pesos = 1 / (ratio_muestras + 0.02)
+    #print(ratio_muestras)
+    #time.sleep(5)
+    pesos = 1 / (ratio_muestras + 0.5) # + 0.02
+    #print(pesos)
+    #time.sleep(50)
 
     print(label_counts_list)
     print('Done.')
-    print('Weights:', weights)
+    #print('Weights:', weights)
 
 
-    mis_pesos = torch.tensor([0.1, 0.1, 0.5, 0.0, 0.0, 0.0, 1000.0, 0.1], dtype=torch.float, device=args.gpu) 
-    print('Mis Pesos:', mis_pesos)
+    #mis_pesos = torch.tensor([0.1, 0.1, 0.5, 0.0, 0.0, 0.0, 1000.0, 0.1], dtype=torch.float, device=args.gpu) 
+    #print('Mis Pesos:', mis_pesos)
 
-    print("Nuevos pesos:", pesos)
+    print("Pesos de la loss:", pesos)
 
     ####
     ## Esto se hacía con cfg.class_weights, ver como hacer algo similar.
     ####
-    criterion = nn.CrossEntropyLoss(weight=pesos) #weight=pesos      #weight=weights) weight=pesos
+    criterion = nn.CrossEntropyLoss(weight=pesos )   #weight=pesos  #weight=pesos      #weight=weights) weight=pesos
 
     optimizer = torch.optim.Adam(model.parameters(), lr=args.adam_lr)
 
@@ -204,7 +212,9 @@ def train(args):
                 #time.sleep(20)
                 ious.append(intersection_over_union2(scores, labels))
 
-            #scheduler.step()                                             ######################################################################################step quitado
+            if (epoch % 5 == 0): #step del schedler cada 10 pasos
+                print("Scheduler reducido en la epoch, ", scheduler)
+                scheduler.step()                                             ######################################################################################step quitado
 
             accs = np.nanmean(np.array(accuracies), axis=0)
             ious = np.nanmean(np.array(ious), axis=0)
@@ -265,8 +275,8 @@ def train(args):
                     dict(
                         epoch=epoch,
                         model_state_dict=model.state_dict(),
-                        optimizer_state_dict=optimizer.state_dict()#,
-                        #scheduler_state_dict=scheduler.state_dict()
+                        optimizer_state_dict=optimizer.state_dict(),
+                        scheduler_state_dict=scheduler.state_dict()
                     ),
                     args.logs_dir /  f'checkpoint_{epoch:02d}.pth'
                 )
@@ -289,12 +299,12 @@ if __name__ == '__main__':
                         default='dataset_final_pruebas_balanceo_2/')
 
     expr.add_argument('--epochs', type=int, help='number of epochs',
-                        default=250)
+                        default=1000)
     expr.add_argument('--load', type=str, help='model to load',
                         default='')
 
     param.add_argument('--adam_lr', type=float, help='learning rate of the optimizer',
-                        default=0.00025) #1e-2)
+                        default=0.001) #1e-2)
     #param.add_argument('--batch_size', type=int, help='batch size',
                         #default=1)
     param.add_argument('--decimation', type=int, help='ratio the point cloud is divided by at each layer',
@@ -304,7 +314,7 @@ if __name__ == '__main__':
     param.add_argument('--neighbors', type=int, help='number of neighbors considered by k-NN',
                         default=16)
     param.add_argument('--scheduler_gamma', type=float, help='gamma of the learning rate scheduler',
-                        default=1)
+                        default=0.95)
 
     dirs.add_argument('--test_dir', type=str, help='location of the test set in the dataset dir',
                         default='test')
