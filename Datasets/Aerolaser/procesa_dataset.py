@@ -83,7 +83,7 @@ if opt.split == 'train':
     if(opt.range == 0):
         save_dir = 'train/train/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + '/'
     if(opt.range == -1):
-        save_dir = 'train/train/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+2) + '/'
+        save_dir = 'train/train/procesados' + str(opt.puntos_finales) + str(opt.range) + '_' + str(opt.range+2) + '/'
     
 if opt.split == 'validation':
     print("Procesando Validation")
@@ -93,7 +93,7 @@ if opt.split == 'validation':
     if(opt.range == 0):
         save_dir = 'train/validation/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + '/'
     if(opt.range == -1):
-        save_dir = 'train/validation/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+2) + '/'
+        save_dir = 'train/validation/procesados' + str(opt.puntos_finales)  + str(opt.range) + '_' + str(opt.range+2) + '/'
 
 if opt.split == 'test':
     print("Procesando Test")
@@ -103,7 +103,7 @@ if opt.split == 'test':
     if(opt.range == 0):
         save_dir = 'test/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + '/'
     if(opt.range == -1):
-        save_dir = 'test/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+2) + '/'
+        save_dir = 'test/procesados' + str(opt.puntos_finales) + str(opt.range) + '_' + str(opt.range+2) + '/'
 
 datos_fragmentos = []
 
