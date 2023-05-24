@@ -1,4 +1,5 @@
-Datasets/
+Datasets/Aerolaser/train/
+Datasets/Aerolaser/test/
 RandLA-Net/runs/
 RandLA-Net/runs/checkpoint_01.pth
 RandLA-Net/runs/checkpoint_02.pth
