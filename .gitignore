@@ -1,1 +1,46 @@
 Datasets/
+RandLA-Net/runs/
+RandLA-Net/runs/checkpoint_01.pth
+RandLA-Net/runs/checkpoint_02.pth
+RandLA-Net/runs/checkpoint_03.pth
+RandLA-Net/runs/checkpoint_04.pth
+RandLA-Net/runs/checkpoint_05.pth
+RandLA-Net/runs/events.out.tfevents.1684923981.AEROLASER41.22284.0
+RandLA-Net/runs/Loss_Training loss/events.out.tfevents.1684924065.AEROLASER41.22284.1
+RandLA-Net/runs/Loss_Validation loss/events.out.tfevents.1684924065.AEROLASER41.22284.2
+RandLA-Net/runs/Per-class IoU_01_Training accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.5
+RandLA-Net/runs/Per-class IoU_01_Validation accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.6
+RandLA-Net/runs/Per-class IoU_02_Training accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.9
+RandLA-Net/runs/Per-class IoU_02_Validation accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.10
+RandLA-Net/runs/Per-class IoU_03_Training accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.13
+RandLA-Net/runs/Per-class IoU_03_Validation accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.14
+RandLA-Net/runs/Per-class IoU_04_Training accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.17
+RandLA-Net/runs/Per-class IoU_04_Validation accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.18
+RandLA-Net/runs/Per-class IoU_05_Training accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.21
+RandLA-Net/runs/Per-class IoU_05_Validation accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.22
+RandLA-Net/runs/Per-class IoU_06_Training accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.25
+RandLA-Net/runs/Per-class IoU_06_Validation accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.26
+RandLA-Net/runs/Per-class IoU_07_Training accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.29
+RandLA-Net/runs/Per-class IoU_07_Validation accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.30
+RandLA-Net/runs/Per-class IoU_08_Training accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.33
+RandLA-Net/runs/Per-class IoU_08_Validation accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.34
+RandLA-Net/runs/Per-class IoU_Mean IoU_Training accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.37
+RandLA-Net/runs/Per-class IoU_Mean IoU_Validation accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.38
+RandLA-Net/runs/Per-class accuracy_01_Training accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.3
+RandLA-Net/runs/Per-class accuracy_01_Validation accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.4
+RandLA-Net/runs/Per-class accuracy_02_Training accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.7
+RandLA-Net/runs/Per-class accuracy_02_Validation accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.8
+RandLA-Net/runs/Per-class accuracy_03_Training accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.11
+RandLA-Net/runs/Per-class accuracy_03_Validation accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.12
+RandLA-Net/runs/Per-class accuracy_04_Training accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.15
+RandLA-Net/runs/Per-class accuracy_04_Validation accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.16
+RandLA-Net/runs/Per-class accuracy_05_Training accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.19
+RandLA-Net/runs/Per-class accuracy_05_Validation accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.20
+RandLA-Net/runs/Per-class accuracy_06_Training accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.23
+RandLA-Net/runs/Per-class accuracy_06_Validation accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.24
+RandLA-Net/runs/Per-class accuracy_07_Training accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.27
+RandLA-Net/runs/Per-class accuracy_07_Validation accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.28
+RandLA-Net/runs/Per-class accuracy_08_Training accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.31
+RandLA-Net/runs/Per-class accuracy_08_Validation accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.32
+RandLA-Net/runs/Per-class accuracy_Overall_Training accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.35
+RandLA-Net/runs/Per-class accuracy_Overall_Validation accuracy/events.out.tfevents.1684924065.AEROLASER41.22284.36
