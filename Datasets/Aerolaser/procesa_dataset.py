@@ -7,6 +7,8 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--split', type=str, choices = ('train', 'validation', 'test'), required=True, help='if train, dataset is splited, downsampled, normalized, if test same, but also gives numbers to reconstruct and paint dataset later')
+parser.add_argument('--range', type=int, choices = (-1, 0), required=True, help='normaliza entre 0 y 1 o -1,1')
+parser.add_argument('--puntos_finales', type=int, choices = (1024, 2048, 4096, 16384, 32768, 50000), required=True, help='puntos que tendrá cada fichero final')
 opt = parser.parse_args()
 
 def normalize_dataset(data):
@@ -74,26 +76,34 @@ def return_normalized(x_normalized1, y_normalized1, x_normalized, y_normalized, 
 
 if opt.split == 'train':
     print("Procesando Train")
-    #las_dir = r'C:/Users/sfernandez/nueva_etapa/moviendoAlServidor/Pointnet2Aerolaser/nuevaparticion/train/train/' 
-    las_dir = r'Datasets/Aerolaser/train/train/' 
-    las_dir = 'train/train/solopartidos/' 
-    #save_dir = las_dir + 'procesados16384-0_1/'
-    save_dir = 'train/train/procesados16384-0_1/'
-    #save_dir = las_dir + 'procesados4K-1_1/'
+
+    las_dir = 'train/train/solopartidos/' #origen
+
+    #Para guardar
+    if(opt.range == 0):
+        save_dir = 'train/train/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + '/'
+    if(opt.range == -1):
+        save_dir = 'train/train/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+2) + '/'
+    
 if opt.split == 'validation':
-    print("Validation")
-    #las_dir = r'C:/Users/sfernandez/nueva_etapa/moviendoAlServidor/Pointnet2Aerolaser/nuevaparticion/train/validation/'  #train/'
-    las_dir = r'Datasets/Aerolaser/train/validation/' 
-    #save_dir = las_dir + 'procesados16384-0_1/'
-    save_dir = 'train/validation/procesados16384-0_1/'
-    #save_dir = las_dir + 'procesados4K-1_1/'
+    print("Procesando Validation")
+
+    las_dir = 'train/validation/solopartidos/' #origen
+
+    if(opt.range == 0):
+        save_dir = 'train/validation/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + '/'
+    if(opt.range == -1):
+        save_dir = 'train/validation/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+2) + '/'
+
 if opt.split == 'test':
-    print("Test")
-    #las_dir = r'C:/Users/sfernandez/nueva_etapa/moviendoAlServidor/Pointnet2Aerolaser/nuevaparticion/test/'  #train/'
-    las_dir = r'Datasets/Aerolaser/test/' 
-    #save_dir = las_dir + 'procesados16384-0_1/'
-    save_dir = 'test/procesados16384-0_1/'
-    #save_dir = las_dir + 'procesados4K-1_1/'
+    print("Procesando Test")
+
+    las_dir = 'test/solopartidos/' #origen
+
+    if(opt.range == 0):
+        save_dir = 'test/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + '/'
+    if(opt.range == -1):
+        save_dir = 'test/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+2) + '/'
 
 datos_fragmentos = []
 
@@ -108,7 +118,7 @@ for filename in tqdm(os.listdir(las_dir)):
         #print(nubetemp)
         #time.sleep(10)
 
-        npoints = 16384 # 16384
+        npoints = opt.puntos_finales
         choice = np.random.choice(nubetemp.shape[0], npoints, replace=True)
         randomNube = nubetemp[choice, :]#, c[choice]
 
@@ -129,7 +139,7 @@ for filename in tqdm(os.listdir(las_dir)):
             else:
                 voxel_dict[voxel_index] = [nubetemp[i]]
 
-        fixed_num_points = 16384 #16384  # Adjust this value based on your requirements
+        fixed_num_points = opt.puntos_finales #16384  # Adjust this value based on your requirements
         num_points_per_voxel = int(np.ceil(fixed_num_points / len(voxel_dict)))
 
         downsampled_points = []
@@ -154,12 +164,14 @@ for filename in tqdm(os.listdir(las_dir)):
 
      
         if len(downsampled_points)>16: #que haya mas de 16 puntos arbitrariamente
-            #puntos_normalizados = normalize_dataset_1_1(downsampled_points)
-            puntos_normalizados = normalize_dataset(downsampled_points)
+            
+            if(opt.range == 0):
+                puntos_normalizados = normalize_dataset(downsampled_points)
+            if(opt.range == -1):
+                puntos_normalizados = normalize_dataset_1_1(downsampled_points)
 
             #Guardar random para duplicar puntos 
-
-            indices = np.random.choice(puntos_normalizados.shape[0], size=16384, replace=True)
+            indices = np.random.choice(puntos_normalizados.shape[0], size=opt.puntos_finales, replace=True)
             resized = puntos_normalizados = puntos_normalizados[indices]
 
             np.save(save_dir + filename, resized)
