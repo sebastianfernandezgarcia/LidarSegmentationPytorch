@@ -129,22 +129,32 @@ def train(args):
     ratio_samples = n_samples / n_samples.sum()
     weights = 1 / (ratio_samples + 0.02)
     """
-    label_counts = {}
+    from collections import OrderedDict
+
+    label_counts = OrderedDict()
 
     for _, labels in tqdm(train_loader):
         labels = labels.numpy().flatten()
         unique_labels, counts = np.unique(labels, return_counts=True)
         label_counts_batch = dict(zip(unique_labels, counts))
-        
+
         for label, count in label_counts_batch.items():
             if label in label_counts:
                 label_counts[label] += count
             else:
                 label_counts[label] = count
-  
 
-    label_counts_list = [count for _, count in label_counts.items()]
-    n_muestras = torch.tensor(label_counts_list, dtype=torch.float, device=args.gpu)
+    # Ordenar el diccionario por las claves
+    label_counts = OrderedDict(sorted(label_counts.items()))
+
+    # Mostrar las ocurrencias y clases
+    #for label, count in label_counts.items():
+    #    print(f"Clase: {label}, Ocurrencias: {count}")
+    print(label_counts)
+    label_counts_values = list(label_counts.values())
+    print(label_counts_values)
+
+    n_muestras = torch.tensor(label_counts_values, dtype=torch.float, device=args.gpu)
     #print(n_muestras)
     #time.sleep(5)
     ratio_muestras = n_muestras / n_muestras.sum()
@@ -153,8 +163,7 @@ def train(args):
     pesos = 1 / (ratio_muestras + 0.02) # + 0.02
     #print(pesos)
     #time.sleep(50)
-
-    print(label_counts_list)
+    pesos = pesos.to(device_to)
     print('Done.')
     #print('Weights:', weights)
 
