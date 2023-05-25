@@ -10,7 +10,7 @@ import warnings
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.utils.tensorboard import SummaryWriter
+#fom torch.utils.tensorboard import SummaryWriter
 
 from data import data_loaders
 
@@ -22,7 +22,7 @@ from utils.metrics import accuracy, accuracy2, intersection_over_union2, interse
 
 #from dataset.dataset import Aerolaser
 
-import torch_geometric.transforms as GT
+#import torch_geometric.transforms as GT
 
 def evaluate(model, loader, criterion, device):
     model.eval()
@@ -186,112 +186,113 @@ def train(args):
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
 
-    with SummaryWriter(logs_dir) as writer:
-        for epoch in range(first_epoch, args.epochs+1):
-            print(f'=== EPOCH {epoch:d}/{args.epochs:d} ===')
-            t0 = time.time()
-            # Train
-            model.train()
+    #with SummaryWriter(logs_dir) as writer:
+    for epoch in range(first_epoch, args.epochs+1):
+        print(f'=== EPOCH {epoch:d}/{args.epochs:d} ===')
+        t0 = time.time()
+        # Train
+        model.train()
 
-            # metrics
-            losses = []
-            accuracies = []
-            ious = []
+        # metrics
+        losses = []
+        accuracies = []
+        ious = []
 
-            # iterate over dataset
-            for points, labels in tqdm(train_loader, desc='Training', leave=False):
-                points = points.to(device_to)
-                labels = labels.to(device_to)
-                optimizer.zero_grad()
+        # iterate over dataset
+        for points, labels in tqdm(train_loader, desc='Training', leave=False):
+            points = points.to(device_to)
+            labels = labels.to(device_to)
+            optimizer.zero_grad()
 
-                scores = model(points)
+            scores = model(points)
 
-                logp = torch.distributions.utils.probs_to_logits(scores, is_binary=False)
+            logp = torch.distributions.utils.probs_to_logits(scores, is_binary=False)
 
-                #print(labels.shape)
+            #print(labels.shape)
 
-                loss = criterion(logp, labels.squeeze())
-                # logpy = torch.gather(logp, 1, labels)
-                # loss = -(logpy).mean()
+            loss = criterion(logp, labels.squeeze())
+            # logpy = torch.gather(logp, 1, labels)
+            # loss = -(logpy).mean()
 
-                loss.backward()
+            loss.backward()
 
-                optimizer.step()
+            optimizer.step()
 
-                losses.append(loss.cpu().item())
+            losses.append(loss.cpu().item())
 
-                accuracies.append(accuracy2(scores, labels))
-                #time.sleep(20)
-                ious.append(intersection_over_union2(scores, labels))
+            accuracies.append(accuracy2(scores, labels))
+            #time.sleep(20)
+            ious.append(intersection_over_union2(scores, labels))
 
-            if (epoch % 30 == 0): #step del schedler cada 3 pasos
-                print("Scheduler reducido en la epoch, ", scheduler)
-                scheduler.step()                                             ######################################################################################step quitado
+        if (epoch % 10 == 0): #step del schedler cada 3 pasos
+            print("Scheduler reducido en la epoch, ", scheduler)
+            scheduler.step()                                             ######################################################################################step quitado
 
-            accs = np.nanmean(np.array(accuracies), axis=0)
-            ious = np.nanmean(np.array(ious), axis=0)
+        accs = np.nanmean(np.array(accuracies), axis=0)
+        ious = np.nanmean(np.array(ious), axis=0)
 
-            val_loss, val_accs, val_ious = evaluate(
-                model,
-                val_loader,
-                criterion,
-                args.gpu
+        val_loss, val_accs, val_ious = evaluate(
+            model,
+            val_loader,
+            criterion,
+            args.gpu
+        )
+
+        loss_dict = {
+            'Training loss':    np.mean(losses),
+            'Validation loss':  val_loss
+        }
+        acc_dicts = [
+            {
+                'Training accuracy': acc,
+                'Validation accuracy': val_acc
+            } for acc, val_acc in zip(accs, val_accs)
+        ]
+        iou_dicts = [
+            {
+                'Training accuracy': iou,
+                'Validation accuracy': val_iou
+            } for iou, val_iou in zip(ious, val_ious)
+        ]
+
+        t1 = time.time()
+        d = t1 - t0
+        # Display results
+        for k, v in loss_dict.items():
+            print(f'{k}: {v:.7f}', end='\t')
+        print()
+
+        print('Accuracy     ', *[f'{i:>5d}' for i in range(num_classes)], '   OA', sep=' | ')
+        print('Training:    ', *[f'{acc:.3f}' if not np.isnan(acc) else '  nan' for acc in accs], sep=' | ')
+        print('Validation:  ', *[f'{acc:.3f}' if not np.isnan(acc) else '  nan' for acc in val_accs], sep=' | ')
+
+        print('IoU          ', *[f'{i:>5d}' for i in range(num_classes)], ' mIoU', sep=' | ')
+        print('Training:    ', *[f'{iou:.3f}' if not np.isnan(iou) else '  nan' for iou in ious], sep=' | ')
+        print('Validation:  ', *[f'{iou:.3f}' if not np.isnan(iou) else '  nan' for iou in val_ious], sep=' | ')
+
+        print('Time elapsed:', '{:.0f} s'.format(d) if d < 60 else '{:.0f} min {:02.0f} s'.format(*divmod(d, 60)))
+        
+        """
+        # send results to tensorboard
+        writer.add_scalars('Loss', loss_dict, epoch)
+
+        for i in range(num_classes):
+            writer.add_scalars(f'Per-class accuracy/{i+1:02d}', acc_dicts[i], epoch)
+            writer.add_scalars(f'Per-class IoU/{i+1:02d}', iou_dicts[i], epoch)
+        writer.add_scalars('Per-class accuracy/Overall', acc_dicts[-1], epoch)
+        writer.add_scalars('Per-class IoU/Mean IoU', iou_dicts[-1], epoch)
+        """
+        print("Scheduleer statedic", scheduler.state_dict())
+        if epoch % args.save_freq == 0:
+            torch.save(
+                dict(
+                    epoch=epoch,
+                    model_state_dict=model.state_dict(),
+                    optimizer_state_dict=optimizer.state_dict(),
+                    scheduler_state_dict=scheduler.state_dict()
+                ),
+                args.logs_dir /  f'checkpoint_{epoch:02d}.pth'
             )
-
-            loss_dict = {
-                'Training loss':    np.mean(losses),
-                'Validation loss':  val_loss
-            }
-            acc_dicts = [
-                {
-                    'Training accuracy': acc,
-                    'Validation accuracy': val_acc
-                } for acc, val_acc in zip(accs, val_accs)
-            ]
-            iou_dicts = [
-                {
-                    'Training accuracy': iou,
-                    'Validation accuracy': val_iou
-                } for iou, val_iou in zip(ious, val_ious)
-            ]
-
-            t1 = time.time()
-            d = t1 - t0
-            # Display results
-            for k, v in loss_dict.items():
-                print(f'{k}: {v:.7f}', end='\t')
-            print()
-
-            print('Accuracy     ', *[f'{i:>5d}' for i in range(num_classes)], '   OA', sep=' | ')
-            print('Training:    ', *[f'{acc:.3f}' if not np.isnan(acc) else '  nan' for acc in accs], sep=' | ')
-            print('Validation:  ', *[f'{acc:.3f}' if not np.isnan(acc) else '  nan' for acc in val_accs], sep=' | ')
-
-            print('IoU          ', *[f'{i:>5d}' for i in range(num_classes)], ' mIoU', sep=' | ')
-            print('Training:    ', *[f'{iou:.3f}' if not np.isnan(iou) else '  nan' for iou in ious], sep=' | ')
-            print('Validation:  ', *[f'{iou:.3f}' if not np.isnan(iou) else '  nan' for iou in val_ious], sep=' | ')
-
-            print('Time elapsed:', '{:.0f} s'.format(d) if d < 60 else '{:.0f} min {:02.0f} s'.format(*divmod(d, 60)))
-
-            # send results to tensorboard
-            writer.add_scalars('Loss', loss_dict, epoch)
-
-            for i in range(num_classes):
-                writer.add_scalars(f'Per-class accuracy/{i+1:02d}', acc_dicts[i], epoch)
-                writer.add_scalars(f'Per-class IoU/{i+1:02d}', iou_dicts[i], epoch)
-            writer.add_scalars('Per-class accuracy/Overall', acc_dicts[-1], epoch)
-            writer.add_scalars('Per-class IoU/Mean IoU', iou_dicts[-1], epoch)
-
-            print("Scheduleer statedic", scheduler.state_dict())
-            if epoch % args.save_freq == 0:
-                torch.save(
-                    dict(
-                        epoch=epoch,
-                        model_state_dict=model.state_dict(),
-                        optimizer_state_dict=optimizer.state_dict(),
-                        scheduler_state_dict=scheduler.state_dict()
-                    ),
-                    args.logs_dir /  f'checkpoint_{epoch:02d}.pth'
-                )
 
 
 if __name__ == '__main__':
@@ -311,7 +312,7 @@ if __name__ == '__main__':
                         default='dataset_final_pruebas_balanceo_2/')
 
     expr.add_argument('--epochs', type=int, help='number of epochs',
-                        default=1000)
+                        default=2000)
     expr.add_argument('--load', type=str, help='model to load',
                         default='')
 
@@ -326,7 +327,7 @@ if __name__ == '__main__':
     param.add_argument('--neighbors', type=int, help='number of neighbors considered by k-NN',
                         default=16)
     param.add_argument('--scheduler_gamma', type=float, help='gamma of the learning rate scheduler',
-                        default=0.5)
+                        default=0.1)
 
     dirs.add_argument('--test_dir', type=str, help='location of the test set in the dataset dir',
                         default='test')
@@ -344,7 +345,7 @@ if __name__ == '__main__':
     #misc.add_argument('--num_workers', type=int, help='number of threads for loading data',
                        # default=0)
     misc.add_argument('--save_freq', type=int, help='frequency of saving checkpoints',
-                        default=1)
+                        default=10)
 
     parser.add_argument('--test_dataset', type=str, default=r'./dataset_final_pruebas_balanceo_2/train/validation/', help='test datasetfolder')
     parser.add_argument('--eval_test_dataset', type=str, default=r'./dataset_final_pruebas_balanceo_2/test', help='test datasetfolder')
