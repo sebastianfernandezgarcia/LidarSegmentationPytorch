@@ -324,8 +324,8 @@ def data_loaders_original(dir, sampling_method='active_learning', **kwargs):
         #val_dataset = PointCloudsDataset('dataset_final_pruebas_balanceo_8/train/validation/') #('dataset_final/train/validation/') #('dataset_final_pruebas_balanceo_2/train/validation/')
 
         #test_dataset = PointCloudsDataset('dataset_final_pruebas_balanceo_8/test/') #('dataset_final/test/') #('dataset_final_pruebas_balanceo_2/test/')
-        test_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/test/procesados1024-1_1/') #('dataset_final/test/') #('dataset_final_pruebas_balanceo_2/test/')
-      
+        #>>>test_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/test/procesados1024-1_1/') #('dataset_final/test/') #('dataset_final_pruebas_balanceo_2/test/')
+        test_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/overfit50k-1/test/')
         return DataLoader(test_dataset, **kwargs) #DataLoader(train_dataset, shuffle=True, **kwargs), DataLoader(val_dataset, **kwargs), 
 
     raise ValueError(f"Dataset sampling method '{sampling_method}' does not exist.")

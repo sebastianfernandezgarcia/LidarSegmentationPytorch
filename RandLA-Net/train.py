@@ -54,8 +54,8 @@ def train(args):
             labels = json.load(f)
             num_classes = len(labels.keys())
     except FileNotFoundError:
-        num_classes = int(input("Number of distinct classes in the dataset: "))
-
+        #num_classes = int(input("Number of distinct classes in the dataset: "))
+        num_classes = 8
     
     train_loader, val_loader, _ = data_loaders(
         args.dataset,
@@ -103,13 +103,22 @@ def train(args):
 
     #d_in = next(iter(train_loader))['points'].size(-1)
     print(d_in)
+
+        #net = net.to(device, dtype)
+    device_to = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+    dtype = torch.float
+
+
     model = RandLANet(
         d_in,
         num_classes,
         num_neighbors=args.neighbors,
         decimation=args.decimation,
-        device=args.gpu
+        device=device_to
     )
+
+
+    model = model.to(device_to) #
 
     print('Computing weights...', end='\t')
 
@@ -141,7 +150,7 @@ def train(args):
     ratio_muestras = n_muestras / n_muestras.sum()
     #print(ratio_muestras)
     #time.sleep(5)
-    pesos = 1 / (ratio_muestras + 0.5) # + 0.02
+    pesos = 1 / (ratio_muestras + 0.02) # + 0.02
     #print(pesos)
     #time.sleep(50)
 
@@ -150,7 +159,7 @@ def train(args):
     #print('Weights:', weights)
 
 
-    #mis_pesos = torch.tensor([0.1, 0.1, 0.5, 0.0, 0.0, 0.0, 1000.0, 0.1], dtype=torch.float, device=args.gpu) 
+    mis_pesos = torch.tensor([0.1, 0.1, 100.0, 100.0, 1.0, 1.0, 100.0, 0.1], dtype=torch.float, device=args.gpu) 
     #print('Mis Pesos:', mis_pesos)
 
     print("Pesos de la loss:", pesos)
@@ -158,7 +167,7 @@ def train(args):
     ####
     ## Esto se hacía con cfg.class_weights, ver como hacer algo similar.
     ####
-    criterion = nn.CrossEntropyLoss(weight=pesos )   #weight=pesos  #weight=pesos      #weight=weights) weight=pesos
+    criterion = nn.CrossEntropyLoss(weight=pesos) #weight=pesos  weight=pesos  #weight=pesos  #weight=pesos      #weight=weights) weight=pesos
 
     optimizer = torch.optim.Adam(model.parameters(), lr=args.adam_lr)
 
@@ -166,9 +175,12 @@ def train(args):
 
     first_epoch = 1
     if args.load:
-        path = max(list((args.logs_dir / args.load).glob('*.pth')))
-        print(f'Loading {path}...')
-        checkpoint = torch.load(path)
+        #path = max(list((args.logs_dir / args.load).glob('*.pth')))
+        #print(f'Loading {path}...')
+        #print(args.load)
+        checkpoint = torch.load(args.load)
+        #print(checkpoint)
+        #time.sleep(30)
         first_epoch = checkpoint['epoch']+1
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
@@ -188,8 +200,8 @@ def train(args):
 
             # iterate over dataset
             for points, labels in tqdm(train_loader, desc='Training', leave=False):
-                points = points.to(args.gpu)
-                labels = labels.to(args.gpu)
+                points = points.to(device_to)
+                labels = labels.to(device_to)
                 optimizer.zero_grad()
 
                 scores = model(points)
@@ -212,7 +224,7 @@ def train(args):
                 #time.sleep(20)
                 ious.append(intersection_over_union2(scores, labels))
 
-            if (epoch % 5 == 0): #step del schedler cada 10 pasos
+            if (epoch % 30 == 0): #step del schedler cada 3 pasos
                 print("Scheduler reducido en la epoch, ", scheduler)
                 scheduler.step()                                             ######################################################################################step quitado
 
@@ -304,7 +316,7 @@ if __name__ == '__main__':
                         default='')
 
     param.add_argument('--adam_lr', type=float, help='learning rate of the optimizer',
-                        default=0.001) #1e-2)
+                        default=0.01) #1e-2)
     #param.add_argument('--batch_size', type=int, help='batch size',
                         #default=1)
     param.add_argument('--decimation', type=int, help='ratio the point cloud is divided by at each layer',
@@ -314,7 +326,7 @@ if __name__ == '__main__':
     param.add_argument('--neighbors', type=int, help='number of neighbors considered by k-NN',
                         default=16)
     param.add_argument('--scheduler_gamma', type=float, help='gamma of the learning rate scheduler',
-                        default=0.95)
+                        default=0.5)
 
     dirs.add_argument('--test_dir', type=str, help='location of the test set in the dataset dir',
                         default='test')
@@ -356,6 +368,8 @@ if __name__ == '__main__':
             warnings.warn('CUDA is not available on your machine. Running the algorithm on CPU.')
             args.gpu = torch.device('cpu')
     else:
+        print("Estas con CPU MACHANGAZO")
+        time.sleep(30)
         args.gpu = torch.device('cpu')
 
     if args.name is None:

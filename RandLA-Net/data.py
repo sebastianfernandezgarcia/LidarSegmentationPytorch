@@ -50,8 +50,8 @@ class PointCloudsDataset(Dataset):
         cls = torch.from_numpy(np.array([c]).astype(np.int64))
         cls = np.transpose(cls)
         
-        choice = np.random.choice(point_set.shape[0], self.npoints, replace=True)
-        points, labels = point_set[choice, :], cls[choice]
+        #choice = np.random.choice(point_set.shape[0], self.npoints, replace=True)
+        #points, labels = point_set[choice, :], cls[choice]
 
         #AHORA SE COGEN DIRECTAMENTE
         points = point_set
@@ -290,12 +290,12 @@ def data_loaders(dir, sampling_method='active_learning', **kwargs):
     if sampling_method == 'naive':
         #train_dataset = PointCloudsDataset(dir / 'train') 
         print("Rango 0, 1")
-        train_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/train/train/procesados16384-0_1/')    #('dataset_final/train/train/')  
+        train_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/overfit50k-1/')    #('dataset_final/train/train/')  
         #>>>train_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/moviendoAlServidor/Pointnet2Aerolaser/nuevaparticion/train/train/procesados50-1_1/')     #('dataset_final/train/train/')      #('dataset_final_pruebas_balanceo_2/train/train/')
         #val_dataset = PointCloudsDataset(dir / 'validation') Datasets\Aerolaser\train\train\procesados1024-1_1
         #>>>>val_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/moviendoAlServidor/Pointnet2Aerolaser/nuevaparticion/train/validation/procesados50-1_1/')  #('dataset_final/train/validation/') #('dataset_final_pruebas_balanceo_2/train/validation/')
-        val_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/train/validation/procesados16384-0_1/') #('dataset_final/train/validation/') #
-        test_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/test/procesados16384-0_1/') #('dataset_final/test/') #('dataset_final_pruebas_balanceo_2/test/')
+        val_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/overfit50k-1/') #('dataset_final/train/validation/') #
+        test_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/overfit50k-1/test/') #('dataset_final/test/') #('dataset_final_pruebas_balanceo_2/test/')
         return DataLoader(train_dataset, shuffle=True, **kwargs), DataLoader(val_dataset, **kwargs), DataLoader(test_dataset, **kwargs)
 
     raise ValueError(f"Dataset sampling method '{sampling_method}' does not exist.")

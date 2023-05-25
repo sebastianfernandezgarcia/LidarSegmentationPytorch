@@ -32,7 +32,7 @@ d_in = 3
 num_classes = 8 #14
 
 model = RandLANet(d_in, num_classes, 16, 4, device)
-model.load_state_dict(torch.load('runs\checkpoint_47.pth')['model_state_dict'])  #'runs/2020-04-11_17:03/checkpoint_10.pth'
+model.load_state_dict(torch.load('runs\checkpoint_1000.pth')['model_state_dict'])  #'runs/2020-04-11_17:03/checkpoint_10.pth'
 model.eval()
 
 """
@@ -71,9 +71,9 @@ with torch.no_grad():
         labels = labels.to(device)
         scores = model(points)
         predictions = torch.max(scores, dim=-2).indices
-        accuracy = (predictions == labels).float().mean()
+        #accuracy = (predictions == labels).float().mean()
         
-        total_accuracy += accuracy.item() * points.size(0)
+        #total_accuracy += accuracy.item() * points.size(0)
         total_samples += points.size(0)
         
         predictions = predictions.cpu().numpy().squeeze() #el esquieze es para que pase de 4096,1  a solo 4096

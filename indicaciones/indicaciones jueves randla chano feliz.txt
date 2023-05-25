@@ -144,3 +144,7 @@ VALE IZQUIERDA EN EPCH 40 EMPEZAMOS A VER ALGO QUE NO SOLO SUELO.
 config: 0.95 base lr 0.001, cada 3. se supone entre -1 y 1 y los pesos tienen el +1 es decir estan por debajo de 1 todo
 
 derecha 0.95 0.001 cada 5, entre 0,1 16384 pesos tienen el +0.5
+
+
+5, 15, 45, 46, 55, 57, 67,84,88,103, 113, 117   - 16_001, 16,131 - 19 CORRECED 01, 73
+,73

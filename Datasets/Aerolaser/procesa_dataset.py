@@ -99,7 +99,7 @@ if opt.split == 'test':
     print("Procesando Test")
 
     las_dir = 'test/solopartidos/' #origen
-
+    las_dir = 'train/train/solopartidos/' #origen
     if(opt.range == 0):
         save_dir = 'test/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + '/'
     if(opt.range == -1):
