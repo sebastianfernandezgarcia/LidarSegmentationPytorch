@@ -290,12 +290,12 @@ def data_loaders(dir, sampling_method='active_learning', **kwargs):
     if sampling_method == 'naive':
         #train_dataset = PointCloudsDataset(dir / 'train') 
         print("Rango 0, 1")
-        train_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/train/train/procesados50000-0_1/')    #('dataset_final/train/train/')  
+        train_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/train/train/procesados4096-0_1') #overfit50k-1/')#train/train/procesados50000-0_1/')    #('dataset_final/train/train/')  
         #>>>train_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/moviendoAlServidor/Pointnet2Aerolaser/nuevaparticion/train/train/procesados50-1_1/')     #('dataset_final/train/train/')      #('dataset_final_pruebas_balanceo_2/train/train/')
         #val_dataset = PointCloudsDataset(dir / 'validation') Datasets\Aerolaser\train\train\procesados1024-1_1
         #>>>>val_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/moviendoAlServidor/Pointnet2Aerolaser/nuevaparticion/train/validation/procesados50-1_1/')  #('dataset_final/train/validation/') #('dataset_final_pruebas_balanceo_2/train/validation/')
-        val_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/train/validation/procesados50000-0_1/') #('dataset_final/train/validation/') #
-        test_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/test/procesados50000-0_1/') #('dataset_final/test/') #('dataset_final_pruebas_balanceo_2/test/')
+        val_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/train/validation/procesados4096-0_1') #overfit50k-1/')#train/validation/procesados50000-0_1/') #('dataset_final/train/validation/') #
+        test_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/test/procesados4096-0_1') #overfit50k-1/')#test/procesados50000-0_1/') #('dataset_final/test/') #('dataset_final_pruebas_balanceo_2/test/')
         return DataLoader(train_dataset, shuffle=True, **kwargs), DataLoader(val_dataset, **kwargs), DataLoader(test_dataset, **kwargs)
 
     raise ValueError(f"Dataset sampling method '{sampling_method}' does not exist.")

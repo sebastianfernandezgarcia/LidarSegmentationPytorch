@@ -1,0 +1,3 @@
+En servidor esta 50k puntos ejeutandose ahi va...
+Ahora en local cancelo todo lo que había. Voy a poner 4096 puntos con Lr  0.005 y gamma 0.95 cada 20 epochs.
+

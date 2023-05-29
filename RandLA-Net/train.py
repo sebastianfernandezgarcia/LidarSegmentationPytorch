@@ -193,7 +193,18 @@ def train(args):
         first_epoch = checkpoint['epoch']+1
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+        #scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+        print("-__--")
+        diccionario = {'gamma': 0.95, 'base_lrs': [0.001], 'last_epoch': 50, 'verbose': False, '_step_count': 51, '_get_lr_called_within_step': False, '_last_lr': [0.001]}
+        diccionario['_last_lr'] = [0.001]
+        diccionario['last_epoch'] = 1
+        diccionario['_step_count'] = 1
+        diccionario['gamma'] = 0.95
+        scheduler.load_state_dict(diccionario)
+        print("----")
+        #print(type(checkpoint['scheduler_state_dict']))
+        #print(checkpoint['optimizer_state_dict'])
+        #time.sleep(30)
 
     #with SummaryWriter(logs_dir) as writer:
     for epoch in range(first_epoch, args.epochs+1):
@@ -233,7 +244,7 @@ def train(args):
             #time.sleep(20)
             ious.append(intersection_over_union2(scores, labels))
 
-        if (epoch % 10 == 0): #step del schedler cada 3 pasos
+        if (epoch % 20 == 0): #step del schedler cada 3 pasos
             print("Scheduler reducido en la epoch, ", scheduler)
             scheduler.step()                                             ######################################################################################step quitado
 
@@ -326,7 +337,7 @@ if __name__ == '__main__':
                         default='')
 
     param.add_argument('--adam_lr', type=float, help='learning rate of the optimizer',
-                        default=0.01) #1e-2)
+                        default=0.005) #1e-2)
     #param.add_argument('--batch_size', type=int, help='batch size',
                         #default=1)
     param.add_argument('--decimation', type=int, help='ratio the point cloud is divided by at each layer',
@@ -336,7 +347,7 @@ if __name__ == '__main__':
     param.add_argument('--neighbors', type=int, help='number of neighbors considered by k-NN',
                         default=16)
     param.add_argument('--scheduler_gamma', type=float, help='gamma of the learning rate scheduler',
-                        default=0.1)
+                        default=0.95)
 
     dirs.add_argument('--test_dir', type=str, help='location of the test set in the dataset dir',
                         default='test')
@@ -361,7 +372,7 @@ if __name__ == '__main__':
     parser.add_argument('--train_dataset', type=str, default=r'./dataset_final_pruebas_balanceo_2/train/train/', help='train datasetfolder')
 
     parser.add_argument('--npoints', type=int, default=16384, help='resample points number') 
-    parser.add_argument('--batch_size', type=int, default=2, help='input batch size')   #Change here batchSize if needed
+    parser.add_argument('--batch_size', type=int, default=16, help='input batch size')   #Change here batchSize if needed
     parser.add_argument('--patience', type=int, default=10, help='the patience the training earlystoping will have')   #Chane patience if needed
     parser.add_argument('--num_workers', type=int, default=0, help='number of data loading workers')
 

@@ -81,9 +81,9 @@ if opt.split == 'train':
 
     #Para guardar
     if(opt.range == 0):
-        save_dir = 'train/train/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + 'noigualado/'
+        save_dir = 'train/train/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + '/'
     if(opt.range == -1):
-        save_dir = 'train/train/procesados' + str(opt.puntos_finales) + str(opt.range) + '_' + str(opt.range+2) + 'noigualado/'
+        save_dir = 'train/train/procesados' + str(opt.puntos_finales) + str(opt.range) + '_' + str(opt.range+2) + '/'
     
 if opt.split == 'validation':
     print("Procesando Validation")
@@ -91,9 +91,9 @@ if opt.split == 'validation':
     las_dir = 'train/validation/solopartidos/' #origen
 
     if(opt.range == 0):
-        save_dir = 'train/validation/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + 'noigualado/'
+        save_dir = 'train/validation/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + '/'
     if(opt.range == -1):
-        save_dir = 'train/validation/procesados' + str(opt.puntos_finales)  + str(opt.range) + '_' + str(opt.range+2) + 'noigualado/'
+        save_dir = 'train/validation/procesados' + str(opt.puntos_finales)  + str(opt.range) + '_' + str(opt.range+2) + '/'
 
 if opt.split == 'test':
     print("Procesando Test")
@@ -101,9 +101,9 @@ if opt.split == 'test':
     las_dir = 'test/solopartidos/' #origen
     #las_dir = 'train/train/solopartidos/' #origen
     if(opt.range == 0):
-        save_dir = 'test/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + 'noigualado/'
+        save_dir = 'test/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + '/'
     if(opt.range == -1):
-        save_dir = 'test/procesados' + str(opt.puntos_finales) + str(opt.range) + '_' + str(opt.range+2) + 'noigualado/'
+        save_dir = 'test/procesados' + str(opt.puntos_finales) + str(opt.range) + '_' + str(opt.range+2) + '/'
 
 datos_fragmentos = []
 
@@ -171,8 +171,8 @@ for filename in tqdm(os.listdir(las_dir)):
                 puntos_normalizados = normalize_dataset_1_1(downsampled_points)
 
             #Guardar random para duplicar puntos 
-            #indices = np.random.choice(puntos_normalizados.shape[0], size=opt.puntos_finales, replace=True)
-            #resized = puntos_normalizados = puntos_normalizados[indices]
-            resized = puntos_normalizados
+            indices = np.random.choice(puntos_normalizados.shape[0], size=opt.puntos_finales, replace=True)
+            resized = puntos_normalizados = puntos_normalizados[indices]
+            #resized = puntos_normalizados
             np.save(save_dir + filename, resized)
     
