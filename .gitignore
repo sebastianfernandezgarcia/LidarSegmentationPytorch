@@ -1,3 +1,7 @@
+Pointnet2/aerolaser_test/
+Pointnet2/aerolaser_train/
+Pointnet2/aerolaser_validation/
+
 Datasets/Aerolaser/train/
 Datasets/Aerolaser/test/
 RandLA-Net/runs/

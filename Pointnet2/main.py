@@ -19,17 +19,19 @@ import logging
 from pytorchtools import EarlyStopping
 from tqdm import tqdm                                                                                                
 
+import time 
+
 ## Argument parser
 parser = argparse.ArgumentParser()
 parser.add_argument('--npoints', type=int, default=16384, help='resample points number') #Choose here number of point resample (if needed)
 parser.add_argument('--model', type=str, default='', help='model path')
 parser.add_argument('--nepoch', type=int, default=100, help='number of epochs to train for')
 parser.add_argument('--outf', type=str, default='checkpoint', help='output folder')
-parser.add_argument('--test_dataset', type=str, default=r'C:/Users/sfernandez/nueva_etapa/github2/LidarSegmentationPytorch/Datasets/Aerolaser/train/validation/', help='test datasetfolder') #r'./aerolaser_validation/'
-parser.add_argument('--eval_test_dataset', type=str, default=r'C:/Users/sfernandez/nueva_etapa/github2/LidarSegmentationPytorch/Datasets/Aerolaser/test/', help='test datasetfolder')
-parser.add_argument('--train_dataset', type=str, default=r'C:/Users/sfernandez/nueva_etapa/github2/LidarSegmentationPytorch/Datasets/Aerolaser/train/train/', help='train datasetfolder')
-parser.add_argument('--batch_size', type=int, default=8, help='input batch size')   #Change here batchSize if needed
-parser.add_argument('--patience', type=int, default=10, help='the patience the training earlystoping will have')   #Chane patience if needed
+parser.add_argument('--test_dataset', type=str, default=r'./aerolaser_validation/', help='test datasetfolder') #r'./aerolaser_validation/'
+parser.add_argument('--eval_test_dataset', type=str, default=r'./aerolaser_test/', help='test datasetfolder')
+parser.add_argument('--train_dataset', type=str, default=r'./aerolaser_train/', help='train datasetfolder')
+parser.add_argument('--batch_size', type=int, default=4, help='input batch size')   #Change here batchSize if needed
+parser.add_argument('--patience', type=int, default=5, help='the patience the training earlystoping will have')   #Chane patience if needed
 parser.add_argument('--num_workers', type=int, default=0, help='number of data loading workers')
 parser.add_argument('--behaviour', type=str, choices = ('trainval', 'test'), default='trainval', help='what you want to do')
 #if you set behaviour to test, make sure to give model, dataset folder... check batchSize..
@@ -60,14 +62,28 @@ def DatasetandTrainingConfiguration(train_dataset_dir, test_dataset_dir, eval_te
     train_transform = GT.Compose([GT.NormalizeScale(), RotTransform, TransTransform])
     test_transform = GT.Compose([GT.NormalizeScale(), ])
 
+
+    ruta_carpeta = train_dataset_dir
+
+    if os.path.exists(ruta_carpeta):
+        print("La carpeta existe.")
+    else:
+        print("La carpeta no existe.")
+        
+    print(train_dataset_dir)
+    #time.sleep(20)
+
+
     dataset = Aerolaser(
         train_dir=train_dataset_dir, test_dir=test_dataset_dir, train=True, transform=train_transform, npoints=opt.npoints)   #train_transform
+    
+
     dataloader = torch.utils.data.DataLoader(
         dataset, batch_size=opt.batch_size, shuffle=True, num_workers=opt.num_workers)
     print(len(dataset))
     print(len(dataloader))
-    import time 
-    time.sleep(10)
+    
+    #time.sleep(10)
     test_dataset = Aerolaser(
         train_dir=train_dataset_dir, test_dir=test_dataset_dir, train=False, transform=test_transform, npoints=opt.npoints) #test_transform
     test_dataloader = torch.utils.data.DataLoader(
@@ -82,6 +98,7 @@ def DatasetandTrainingConfiguration(train_dataset_dir, test_dataset_dir, eval_te
     #def __init__(self, train_dir=r'./aerolaser', test_dir=r'./aerolaser_test/', train=True, transform=None, npoints=2500):
     num_classes = dataset.num_classes()
     
+
     print('dataset size: ', len(dataset))
     print('test_dataset size(valid): ', len(test_dataset))
     print('eval_test_dataset size: ', len(eval_test_dataset))
@@ -147,8 +164,8 @@ def Train(net, dataloader, device, dtype, optimizer, num_classes, num_batch, tes
 
             pred = net(points)  # (batch_size, n, num_classes)
             
-            print(pred.shape)
-            print(pred)
+            #print(pred.shape)
+            #print(pred)
             pred = pred.view(-1, num_classes)  # (batch_size * n, num_classes) 
             target = labels.view(-1, 1)[:, 0]
 
