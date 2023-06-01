@@ -16,7 +16,7 @@ import time
 
 ##
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', type=str, default=r'../aerolaser_new_test/', help='dataset path')
+parser.add_argument('--dataset', type=str, default=r'../aerolaser_test/', help='dataset path')
 parser.add_argument('--category', type=str, default='Airplane', help='select category')
 parser.add_argument('--npoints', type=int, default=2500, help='resample points number')
 parser.add_argument('--model', type=str, default='../checkpoint/checkpoint.pt', help='model path') #cambiar el nombre de los pesos, pongo 19 porque voy a haver epoc 20
@@ -76,9 +76,9 @@ def eval_sample(net, sample):
         pred_label = pred.max(2)[1]
         pred_label = pred_label.view(-1).cpu()  # (n,)
         
-        print("pred_label shape", pred_label.shape)              #OYE MUCHAAAA QUE CAMBIE ESTO PARA QUE TIRE REVISA ESTOOOOOOOOOOOOOOOO
+        #print("pred_label shape", pred_label.shape)              #OYE MUCHAAAA QUE CAMBIE ESTO PARA QUE TIRE REVISA ESTOOOOOOOOOOOOOOOO
         prueba = gt_label.ravel()
-        print("gt_label shape", prueba.shape)
+        #print("gt_label shape", prueba.shape)
         #time.sleep(60)
         assert pred_label.shape == prueba.shape
         return (pred_label, prueba)
@@ -138,13 +138,13 @@ for i in range(len(test_dataset)):
     import time
     #print(sample.shape)
     #time.sleep(20)
-    print('Eval test sample ..')
+    #print('Eval test sample ..')
     pred_label, gt_label = eval_sample(net, sample)
-    print('Eval done ..')
+    #print('Eval done ..')
 
 
     # Get sample result
-    print('Compute mIoU ..')
+    #print('Compute mIoU ..')
     points = sample['points'].numpy()
 
     original_points = sample['original_points']

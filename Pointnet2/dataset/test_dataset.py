@@ -74,9 +74,12 @@ class Aerolaser_Test(Dataset):
         cls = torch.from_numpy(np.array([c]).astype(np.int64))
         cls = np.transpose(cls)
         
-        choice = np.random.choice(point_set.shape[0], self.npoints, replace=True)
-        points, labels = point_set[choice, :], cls[choice]
-        denormalized_point = DENORMALIZED_POINT_SET[choice, :]
+        #choice = np.random.choice(point_set.shape[0], self.npoints, replace=True)
+        #points, labels = point_set[choice, :], cls[choice]
+        #denormalized_point = DENORMALIZED_POINT_SET[choice, :]
+
+        points, labels, denormalized_point = point_set, cls, DENORMALIZED_POINT_SET
+        
         sample = {
             'points': points,  # torch.Tensor (n, 3)
             'labels': labels,   # torch.Tensor (n,)

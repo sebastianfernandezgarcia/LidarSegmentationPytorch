@@ -27,8 +27,8 @@ parser.add_argument('--npoints', type=int, default=16384, help='resample points 
 parser.add_argument('--model', type=str, default='', help='model path')
 parser.add_argument('--nepoch', type=int, default=100, help='number of epochs to train for')
 parser.add_argument('--outf', type=str, default='checkpoint', help='output folder')
-parser.add_argument('--test_dataset', type=str, default=r'./aerolaser_validation/', help='test datasetfolder') #r'./aerolaser_validation/'
-parser.add_argument('--eval_test_dataset', type=str, default=r'./aerolaser_test/', help='test datasetfolder')
+parser.add_argument('--validation_dataset', type=str, default=r'./aerolaser_validation/', help='test datasetfolder') #r'./aerolaser_validation/'
+parser.add_argument('--test_dataset', type=str, default=r'./aerolaser_test/', help='test datasetfolder')
 parser.add_argument('--train_dataset', type=str, default=r'./aerolaser_train/', help='train datasetfolder')
 parser.add_argument('--batch_size', type=int, default=4, help='input batch size')   #Change here batchSize if needed
 parser.add_argument('--patience', type=int, default=5, help='the patience the training earlystoping will have')   #Chane patience if needed
@@ -50,7 +50,7 @@ def setSeeds():
     torch.manual_seed(opt.manual_seed)
     torch.cuda.manual_seed(opt.manual_seed)
 
-def DatasetandTrainingConfiguration(train_dataset_dir, test_dataset_dir, eval_test_dataset_dir):
+def DatasetandTrainingConfiguration(train_dataset_dir, validation_dataset_dir, test_dataset_dir):
     ## Dataset and transform
     print('Construct dataset ..')
     rot_max_angle = 15
@@ -70,29 +70,22 @@ def DatasetandTrainingConfiguration(train_dataset_dir, test_dataset_dir, eval_te
     else:
         print("La carpeta no existe.")
         
-    print(train_dataset_dir)
-    #time.sleep(20)
-
-
     dataset = Aerolaser(
-        train_dir=train_dataset_dir, test_dir=test_dataset_dir, train=True, transform=train_transform, npoints=opt.npoints)   #train_transform
-    
-
+        train_dir=train_dataset_dir, test_dir=validation_dataset_dir, train=True, transform=train_transform, npoints=opt.npoints)   #train_transform
     dataloader = torch.utils.data.DataLoader(
         dataset, batch_size=opt.batch_size, shuffle=True, num_workers=opt.num_workers)
-    print(len(dataset))
-    print(len(dataloader))
+
     
     #time.sleep(10)
+    validation_dataset = Aerolaser(
+        train_dir=train_dataset_dir, test_dir=validation_dataset_dir, train=False, transform=test_transform, npoints=opt.npoints) #test_transform
+    validation_dataloader = torch.utils.data.DataLoader(
+        validation_dataset, batch_size=opt.batch_size, shuffle=True, num_workers=opt.num_workers)
+    
     test_dataset = Aerolaser(
-        train_dir=train_dataset_dir, test_dir=test_dataset_dir, train=False, transform=test_transform, npoints=opt.npoints) #test_transform
+        train_dir=test_dataset_dir, test_dir=test_dataset_dir, train=False, transform=test_transform, npoints=opt.npoints) #test_transform
     test_dataloader = torch.utils.data.DataLoader(
         test_dataset, batch_size=opt.batch_size, shuffle=True, num_workers=opt.num_workers)
-    
-    eval_test_dataset = Aerolaser(
-        train_dir=eval_test_dataset_dir, test_dir=eval_test_dataset_dir, train=False, transform=test_transform, npoints=opt.npoints) #test_transform
-    eval_test_dataloader = torch.utils.data.DataLoader(
-        eval_test_dataset, batch_size=opt.batch_size, shuffle=True, num_workers=opt.num_workers)
 
 
     #def __init__(self, train_dir=r'./aerolaser', test_dir=r'./aerolaser_test/', train=True, transform=None, npoints=2500):
@@ -100,8 +93,8 @@ def DatasetandTrainingConfiguration(train_dataset_dir, test_dataset_dir, eval_te
     
 
     print('dataset size: ', len(dataset))
-    print('test_dataset size(valid): ', len(test_dataset))
-    print('eval_test_dataset size: ', len(eval_test_dataset))
+    print('validation_dataset size(valid): ', len(validation_dataset))
+    print('test_dataset size: ', len(test_dataset))
     print('num_classes: ', num_classes)
 
     try:
@@ -142,9 +135,9 @@ def DatasetandTrainingConfiguration(train_dataset_dir, test_dataset_dir, eval_te
     # Set up logging configuration
     logging.basicConfig(filename='EpochsMetrics.log', filemode='w', level=logging.DEBUG)
 
-    return dataloader, test_dataloader, eval_test_dataloader, criterion, optimizer, blue, device, dtype, num_batch, num_classes, net
+    return dataloader, validation_dataloader, test_dataloader, criterion, optimizer, blue, device, dtype, num_batch, num_classes, net
 
-def Train(net, dataloader, device, dtype, optimizer, num_classes, num_batch, test_dataloader, patience):
+def Train(net, dataloader, device, dtype, optimizer, num_classes, num_batch, validation_dataloader, patience):
 
     early_stopping = EarlyStopping(patience, verbose=True)
 
@@ -194,7 +187,7 @@ def training_eval(epoch):
         correct = 0
         total = 0
         val_loss = 0
-        for i, data in enumerate(tqdm(test_dataloader, 0)): #added tqdm here to try to represent the proggress of the training eval
+        for i, data in enumerate(tqdm(validation_dataloader, 0)): #added tqdm here to try to represent the proggress of the training eval
             points, labels = data['points'], data['labels']
             points = points.transpose(1, 2).contiguous()
             points, labels = points.to(device), labels.to(device, torch.long)
@@ -214,7 +207,7 @@ def training_eval(epoch):
         return val_loss 
         #torch.save(net.state_dict(), '{}/seg_model_{}_{}.pth'.format(opt.outf, "aerolaser_pesos", epoch)) #model saves inside early_stipping if model is better that last epoch
 
-def benchmark_final(net, test_dataloader, num_classes):
+def benchmark_final(net, dataloader, num_classes):
     #BenchMark (Confusion Matrix, mIOU)
     print("Starting Final Benchmark")
     net.eval()
@@ -236,7 +229,7 @@ def benchmark_final(net, test_dataloader, num_classes):
     primero = True
 
     with torch.no_grad():
-        for batch_idx, sample in enumerate(tqdm(test_dataloader)):
+        for batch_idx, sample in enumerate(tqdm(dataloader)):
 
             points, labels = sample['points'], sample['labels']
             points = points.transpose(1, 2).contiguous()
@@ -424,16 +417,15 @@ def metrics(cm):
 if __name__ == "__main__":
 
     setSeeds()
-    dataloader, test_dataloader, eval_test_dataloader, criterion, optimizer, blue, device, dtype, num_batch, num_classes, net = DatasetandTrainingConfiguration(opt.train_dataset, opt.test_dataset, opt.eval_test_dataset)
+    dataloader, validation_dataloader, test_dataloader, criterion, optimizer, blue, device, dtype, num_batch, num_classes, net = DatasetandTrainingConfiguration(opt.train_dataset, opt.validation_dataset, opt.test_dataset)
 
     if opt.behaviour == 'trainval':
-        Train(net, dataloader, device, dtype, optimizer, num_classes, num_batch, test_dataloader, opt.patience)
-        benchmark_final(net, test_dataloader, num_classes) #al validation final se estan pasando los datos e validacion.. puede que despues haya que hacer test claramente...
+        Train(net, dataloader, device, dtype, optimizer, num_classes, num_batch, validation_dataloader, opt.patience)
+        benchmark_final(net, test_dataloader, num_classes) #antes se estaba pasando el validation, con el nuevo cambio esto es test
 
     if opt.behaviour == 'test':
 
         test_net = PointNet2PartSegmentNet(num_classes)
         test_net.load_state_dict(torch.load(opt.model))
         test_net = net.to(device, dtype)
-
-        benchmark_final(test_net, eval_test_dataloader, num_classes) #test_dataloader
+        benchmark_final(test_net, test_dataloader, num_classes) #test_dataloader

@@ -107,17 +107,17 @@ def view_points_labels(points, labels, groundtruth, diff=False):
     labels: np.ndarray with shape (n, 1), dtype=np.int32
     '''
 
-    print("-------")
-    print("-------")
-    import time
-    time.sleep(5)
-    print(points)
-    print(points.shape)
-    print("------")
-    print(labels)
-    print(labels.shape)
+    #print("-------")
+    #print("-------")
+    #import time
+    #time.sleep(5)
+    #print(points)
+    #print(points.shape)
+    #print("------")
+    #print(labels)
+    #print(labels.shape)
 
-    time.sleep(599)
+    #time.sleep(599)
     assert points.shape[0] == labels.shape[0]
     assert points.shape[0] == groundtruth.shape[0]
 
