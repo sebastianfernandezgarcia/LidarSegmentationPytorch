@@ -30,3 +30,6 @@ INFO:root:[Epoch 19] Validation Loss: 0.2736 Validation Accuracy: 0.8990
 INFO:root:Validation loss decreased (0.277990 --> 0.273564).  Saving model ...
 INFO:root:[Epoch 20] Validation Loss: 0.3076 Validation Accuracy: 0.8882
 INFO:root:[Epoch 21] Validation Loss: 0.2786 Validation Accuracy: 0.9022
+INFO:root:[Epoch 22] Validation Loss: 0.2695 Validation Accuracy: 0.9034
+INFO:root:Validation loss decreased (0.273564 --> 0.269463).  Saving model ...
+INFO:root:[Epoch 23] Validation Loss: 0.2830 Validation Accuracy: 0.8995
