@@ -86,15 +86,13 @@ def load_dataset(opt):
 
     print(opt.outf)
     carpeta = opt.outf
-    
+
     if not os.path.exists(carpeta):
         os.makedirs(carpeta)
         print("Se ha creado la carpeta", carpeta)
     else:
         print("La carpeta", carpeta, "ya existe")
-
-    import time
-    time.sleep(10)
+        
     print("\n----Train Dataset----")
     dataset = ParisDataset(
         root=train_data,
@@ -118,7 +116,7 @@ def load_dataset(opt):
         shuffle=True,
         num_workers=int(opt.workers))
     
-    num_classes = 10 #VER COMO DETECTAR NUM CLASES DEL DATASET.. quiza fichero que lo especifique    dataset.num_seg_classes
+    num_classes = 8 #10 #VER COMO DETECTAR NUM CLASES DEL DATASET.. quiza fichero que lo especifique    dataset.num_seg_classes
 
     print ('\nTrain items: {} \nTest items: {} \nClasess: {}\n'.format(len(dataset), len(test_dataset), num_classes))
 
