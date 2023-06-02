@@ -3,6 +3,7 @@ import numpy as np
 from torch.utils.data import Dataset
 from torch_geometric.datasets import ShapeNet
 import torch
+import glob
 
 class Aerolaser_Test(Dataset):
 
@@ -92,6 +93,28 @@ class Aerolaser_Test(Dataset):
     def __len__(self):
         dir_path = self.root# r'split_de_paris/'
         return len([entry for entry in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path, entry))])
-    
+   
+    """
     def num_classes(self):
         return 9#10#8 #self.dataset.num_classes
+    """
+
+    def num_classes(self, train_dir):
+
+        file_list = glob.glob(train_dir + "/*.npy")
+
+        # Recorrer los archivos .npy
+        unique_values = []
+
+        for file_path in file_list:
+            # Realizar operaciones con cada archivo .npy
+            #print("Archivo:", file_path)
+            data = np.load(os.path.join(file_path))
+            c = data[:, 4]
+
+            unique_c = np.unique(c)
+            for value in unique_c:
+                if not np.isin(value, unique_values):
+                    unique_values.append(value)
+        print("El dataset pasado tiene ", len(unique_values), "clases")
+        return len(unique_values)#10#8 #self.dataset.num_classes

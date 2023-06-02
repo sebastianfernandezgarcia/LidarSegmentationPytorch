@@ -1,7 +1,9 @@
 import open3d as o3d
 import numpy as np
 
-def mini_color_table(index, diff, norm=True):
+def mini_color_table(index, diff, tipodataset, norm=True):
+
+    """
     colorsANTES = [
         [0.5000, 0.2500, 0.0000], [0.2000, 0.8000, 0.2000], [0.9900, 0.0000, 0.0000],
         [0.5000, 0.5000, 0.5000], [0.9900, 0.0000, 0.9900], [0.1000, 0.1000, 0.1000],
@@ -13,6 +15,7 @@ def mini_color_table(index, diff, norm=True):
         [1.000, 0.0000, 0.0000], [0.00, 0.0000, 1.00], [0.0000, 1.000, 0.0000],
         [0.9900, 0.9900, 0.0000], [0.0000, 1.0000, 0.9900], [1.0000, 0.0000, 1.0000], [0.0000, 0.8500, 0.0000]
     ]
+    """
 
     if diff:
         colors = [
@@ -22,12 +25,20 @@ def mini_color_table(index, diff, norm=True):
         ]
 
     else:
-        colors = [
-            [0.5000, 0.2500, 0.0000], [0.00, 0.0000, 1.00], #he quitado el 0 del princpio [0.000, 0.0, 0.0]
-            [1.0, 1.0, 0.0], [0.498, 0.251, 0.749], [0.5000, 0.500, 0.5000],
-            [0.9900, 0.0000, 0.9900], [1.0, 0.855, 0.725], [0.9900, 0.0000, 0.0000], [0.2000, 0.8000, 0.2000]
-        ]
-        
+        if tipodataset: #ES AEROLASER Y ESTOS SUS COLORES
+            colors = [
+                [0.5,0.25,0], [0.1,0.6,0], [0.99,0,0],
+                [0.5,0.5,0.5], [0.99,0,0.99], [0.6,0.4,0.6],
+                [0.99,0.99,0], [0.15,0.09,0.9], [0.0000, 0.0000, 0.0000],
+            ]
+
+        if tipodataset==False:  #ES PARIS LILLE Y ESTOS SUS COLORES
+                colors = [
+                    [0.5000, 0.2500, 0.0000], [0.00, 0.0000, 1.00], #he quitado el 0 del princpio [0.000, 0.0, 0.0]
+                    [1.0, 1.0, 0.0], [0.498, 0.251, 0.749], [0.5000, 0.500, 0.5000],
+                    [0.6,0.4,0.6], [1.0, 0.855, 0.725], [0.9900, 0.0000, 0.0000], [0.2000, 0.8000, 0.2000]
+                ]
+
 
         """
         0: "Sin clasificar",
@@ -107,7 +118,7 @@ def view_points(points, colors=None, gt_colors=None ):
 
 
 
-def label2color(labels, diff):
+def label2color(labels, diff,tipodataset):
     '''
     labels: np.ndarray with shape (n, )
     colors(return): np.ndarray with shape (n, 3)
@@ -117,12 +128,12 @@ def label2color(labels, diff):
 
     minl, maxl = np.min(labels), np.max(labels)
     for l in range(minl, maxl + 1):
-        colors[labels==l, :] = mini_color_table(l,diff) 
+        colors[labels==l, :] = mini_color_table(l,diff, tipodataset) 
 
     return colors
 
 
-def view_points_labels(points, labels, groundtruth, diff=False):
+def view_points_labels(points, labels, groundtruth, tipodataset, diff=False):
     '''
     Assign points with colors by labels and view colored points.
     points: np.ndarray with shape (n, 3)
@@ -143,8 +154,8 @@ def view_points_labels(points, labels, groundtruth, diff=False):
     assert points.shape[0] == labels.shape[0]
     assert points.shape[0] == groundtruth.shape[0]
 
-    ground_truth_colors = label2color(groundtruth, diff)
-    colors = label2color(labels, diff)
+    ground_truth_colors = label2color(groundtruth, diff,tipodataset)
+    colors = label2color(labels, diff,tipodataset)
     #mis_colores = pinta_mis_colores(labels)
 
     view_points(points, colors, ground_truth_colors)
