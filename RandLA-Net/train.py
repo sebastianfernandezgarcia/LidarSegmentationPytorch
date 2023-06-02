@@ -244,7 +244,7 @@ def train(args):
             #time.sleep(20)
             ious.append(intersection_over_union2(scores, labels))
 
-        if (epoch % 20 == 0): #step del schedler cada 3 pasos
+        if (epoch % 3 == 0): #step del schedler cada 3 pasos
             print("Scheduler reducido en la epoch, ", scheduler)
             scheduler.step()                                             ######################################################################################step quitado
 
@@ -337,7 +337,7 @@ if __name__ == '__main__':
                         default='')
 
     param.add_argument('--adam_lr', type=float, help='learning rate of the optimizer',
-                        default=0.005) #1e-2)
+                        default=1e-2) #1e-2)
     #param.add_argument('--batch_size', type=int, help='batch size',
                         #default=1)
     param.add_argument('--decimation', type=int, help='ratio the point cloud is divided by at each layer',
@@ -365,14 +365,14 @@ if __name__ == '__main__':
     #misc.add_argument('--num_workers', type=int, help='number of threads for loading data',
                        # default=0)
     misc.add_argument('--save_freq', type=int, help='frequency of saving checkpoints',
-                        default=10)
+                        default=1)
 
     parser.add_argument('--test_dataset', type=str, default=r'./dataset_final_pruebas_balanceo_2/train/validation/', help='test datasetfolder')
     parser.add_argument('--eval_test_dataset', type=str, default=r'./dataset_final_pruebas_balanceo_2/test', help='test datasetfolder')
     parser.add_argument('--train_dataset', type=str, default=r'./dataset_final_pruebas_balanceo_2/train/train/', help='train datasetfolder')
 
     parser.add_argument('--npoints', type=int, default=16384, help='resample points number') 
-    parser.add_argument('--batch_size', type=int, default=16, help='input batch size')   #Change here batchSize if needed
+    parser.add_argument('--batch_size', type=int, default=30, help='input batch size')   #Change here batchSize if needed
     parser.add_argument('--patience', type=int, default=10, help='the patience the training earlystoping will have')   #Chane patience if needed
     parser.add_argument('--num_workers', type=int, default=0, help='number of data loading workers')
 
