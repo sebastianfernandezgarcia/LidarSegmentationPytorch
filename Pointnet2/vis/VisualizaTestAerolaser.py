@@ -13,6 +13,10 @@ import numpy as np
 import argparse
 import random
 import time
+import logging
+from sklearn.metrics import confusion_matrix
+from confusion_matrix_plotParis import muestra_matriz_confusion
+import tqdm
 
 ##
 parser = argparse.ArgumentParser()
@@ -56,6 +60,7 @@ net.load_state_dict(torch.load(opt.model))
 net = net.to(device, dtype)
 net.eval()
 
+logging.basicConfig(filename='LOGASOguapoTesteo.log', filemode='w', level=logging.DEBUG)
 
 ##
 def eval_sample(net, sample):
@@ -185,9 +190,6 @@ print('View pred labels ..')
 view_points_labels(all_original_points, all_pred_labels, all_gt_labels, tipodataset=True)
 
 
-
-
-
 ###################RANDOMS EVALUANDO CADA SEGMENTO
 """
 for i in valores_aleatorios:
@@ -221,3 +223,10 @@ for i in valores_aleatorios:
     print('View pred labels ..')
     view_points_labels(points, pred_labels)
 """
+
+
+
+
+
+
+
