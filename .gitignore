@@ -2,12 +2,20 @@ Pointnet2/aerolaser_test/
 Pointnet2/aerolaser_train/
 Pointnet2/aerolaser_validation/
 
-Datasets/ParisLille/
+Datasets/ParisLille/segments/
+Datasets/ParisLille/test_10_classes/
+Datasets/ParisLille/testFAKE/
+Datasets/ParisLille/train/
+Datasets/ParisLille/training_10_classes/
+Datasets/ParisLille/antiguoelprmerosiconsiguesmejorarborrarestoParisLille.zip
+
 
 Pointnet2/paris_train/
 Pointnet2/paris_test/
 Pointnet2/paris_validation/
 Pointnet2/paris_faketest/
+
+Pointnet2/siconsiguesmejorarparisborraresto.zip
 
 Datasets/Aerolaser/train/
 Datasets/Aerolaser/test/
