@@ -24,9 +24,9 @@ import time
 ## Argument parser
 parser = argparse.ArgumentParser()
 parser.add_argument('--npoints', type=int, default=16384, help='resample points number') #Choose here number of point resample (if needed)
-parser.add_argument('--model', type=str, default='', help='model path') #checkpoint/checkpoint.pt
+parser.add_argument('--model', type=str, default='', help='model path') #checkpoint/checkpointAerolaser.pt
 parser.add_argument('--nepoch', type=int, default=100, help='number of epochs to train for')
-parser.add_argument('--outf', type=str, default='checkpoint', help='output folder')
+parser.add_argument('--outf', type=str, default='checkpointAerolaser', help='output folder')
 parser.add_argument('--validation_dataset', type=str, default=r'./aerolaser_validation/', help='test datasetfolder') #r'./aerolaser_validation/'
 parser.add_argument('--test_dataset', type=str, default=r'./aerolaser_test/', help='test datasetfolder') #r'./aerolaser_test/'
 parser.add_argument('--train_dataset', type=str, default=r'./aerolaser_train/', help='train datasetfolder') #   r'./paris_train/procesados4096-0_1/'
