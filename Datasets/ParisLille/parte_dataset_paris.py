@@ -116,8 +116,20 @@ def split_dataset(output_folder):
             xyzic = np.stack([x, y, z, reflectance, label], axis=0).transpose((1, 0))
             #print(xyzic.shape)
 
-            print(xyzic)
-            data = xyzic
+            #print(xyzic)
+
+            def borrar_ignorados(arr, valores_borrar, column_index):
+                for value_to_delete in valores_borrar:
+                    # Crear una máscara booleana para identificar las filas a eliminar
+                    mask = arr[:, column_index] == value_to_delete
+                    # Eliminar las filas que cumplen la condición
+                    arr = np.delete(arr, np.where(mask), axis=0)
+                    return arr
+
+            nuevos_puntos = borrar_ignorados(xyzic, [0], 4) #0 borrar lo sin clasificacion.
+
+
+            data = nuevos_puntos #xyzic
 
 
             base_filename = os.path.basename(f)
