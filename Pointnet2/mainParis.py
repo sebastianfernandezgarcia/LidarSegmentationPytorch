@@ -92,7 +92,7 @@ def DatasetandTrainingConfiguration(train_dataset_dir, validation_dataset_dir, t
 
 
     #def __init__(self, train_dir=r'./aerolaser', test_dir=r'./aerolaser_test/', train=True, transform=None, npoints=2500):
-    num_classes = dataset.num_classes()
+    num_classes = dataset.num_classes(train_dataset_dir)
     
 
     print('dataset size: ', len(dataset))

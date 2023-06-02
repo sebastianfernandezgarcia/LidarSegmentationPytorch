@@ -11,7 +11,7 @@ relaciones = {
     4: "cable",
     5: "valla/muro",
     6: "farola",
-    7: "edificio",
+    7: "edificio"
 }
 
 def muestra_matriz_confusion(cf_matrix):

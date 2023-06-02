@@ -24,7 +24,7 @@ import time
 ## Argument parser
 parser = argparse.ArgumentParser()
 parser.add_argument('--npoints', type=int, default=16384, help='resample points number') #Choose here number of point resample (if needed)
-parser.add_argument('--model', type=str, default='checkpoint/checkpoint.pt', help='model path') #checkpoint/checkpoint.pt
+parser.add_argument('--model', type=str, default='', help='model path') #checkpoint/checkpoint.pt
 parser.add_argument('--nepoch', type=int, default=100, help='number of epochs to train for')
 parser.add_argument('--outf', type=str, default='checkpoint', help='output folder')
 parser.add_argument('--validation_dataset', type=str, default=r'./aerolaser_validation/', help='test datasetfolder') #r'./aerolaser_validation/'
@@ -88,7 +88,7 @@ def DatasetandTrainingConfiguration(train_dataset_dir, validation_dataset_dir, t
 
 
     #def __init__(self, train_dir=r'./aerolaser', test_dir=r'./aerolaser_test/', train=True, transform=None, npoints=2500):
-    num_classes = dataset.num_classes()
+    num_classes = dataset.num_classes(train_dataset_dir)
     
 
     print('dataset size: ', len(dataset))
@@ -160,7 +160,7 @@ def Train(net, dataloader, device, dtype, optimizer, num_classes, num_batch, val
             #print(pred)
             pred = pred.view(-1, num_classes)  # (batch_size * n, num_classes) 
             target = labels.view(-1, 1)[:, 0]
-
+            target=target.add(1) #le añadimos uno porque en dataloader se resto uno para que paris funcionase.
             loss = F.nll_loss(pred, target)
             loss.backward()
 
@@ -231,6 +231,7 @@ def benchmark_final(net, dataloader, num_classes):
         for batch_idx, sample in enumerate(tqdm(dataloader)):
 
             points, labels = sample['points'], sample['labels']
+
             points = points.transpose(1, 2).contiguous()
             points = points.to(device, dtype)
 
@@ -270,9 +271,11 @@ def benchmark_final(net, dataloader, num_classes):
                 print("-------------")
                 print("-------------")
                 """
+
                 total_target = np.concatenate((total_target, target_label_reshaped))
 
-            
+
+
             batch_size = target_label.shape[0]
             
             for shape_idx in range(batch_size):
@@ -285,7 +288,13 @@ def benchmark_final(net, dataloader, num_classes):
                     else: iou = float(I) / U
                     part_ious.append(iou)
                 shape_ious.append(np.mean(part_ious))
-            
+
+        #print(type(total_target.flatten()))
+        total_target = np.add(total_target.flatten(), 1)
+        #print(np.unique(total_pred.flatten()))
+        #print(np.unique(total_target.flatten()))
+        #time.sleep(20)
+
         cf_matrix = confusion_matrix(total_pred.flatten(), total_target.flatten())
         
         cf_matrix_de_CHANO = np.array([[9857295, 172798, 30325, 2226, 451, 49382, 295, 36221],
@@ -332,7 +341,7 @@ def benchmark_final(net, dataloader, num_classes):
         print("---------------")
         print("Confussion")
 
-        acc, prec, rec, f1, miou = metrics(cf_matrix)
+        acc_per_class, acc, prec, rec, f1, miou = metrics(cf_matrix)
 
         print("Overall Acc: ", acc)
         print("Overall mIOU: ", miou)
@@ -349,16 +358,18 @@ def benchmark_final(net, dataloader, num_classes):
         logging.info('Overall Recall (All classes): {}'.format(rec))  
         logging.info('Overall F1 Score (All classes): {}'.format(f1))  
 
+
         for current_class in range(len(prec)):
 
             print("---------------------------")
 
-
+            print('Accuracy for class {}: {}'.format(class_dict[current_class], acc_per_class[current_class]))
             print('Precision for class {}: {}'.format(class_dict[current_class], prec[current_class]))
             print('Recall  for class {}: {}'.format(class_dict[current_class], rec[current_class]))
             print('F1 Score for class {}: {}'.format(class_dict[current_class], f1[current_class]))
             
             logging.info('---------------------------')
+            logging.info('Accuracy for class {}: {}'.format(class_dict[current_class], acc_per_class[current_class]))
             logging.info('Precision for class {}: {}'.format(class_dict[current_class], prec[current_class]))
             logging.info('Recall  for class {}: {}'.format(class_dict[current_class], rec[current_class]))
             logging.info('F1 Score for class {}: {}'.format(class_dict[current_class], f1[current_class]))
@@ -366,9 +377,19 @@ def benchmark_final(net, dataloader, num_classes):
     print('Done.')
 
 def metrics(cm):
+    def accuracy_por_clase(cm):
+        tp = np.diag(cm)
+        fp = np.sum(cm, axis=0) - tp
+        tn = np.sum(cm) - np.sum(cm, axis=0) - np.sum(cm, axis=1) + np.diag(cm)
+        fn = np.sum(cm, axis=1) - np.diag(cm)
+
+        acc = (tp+tn)/(tp+tn+fp+fn)
+
+        return acc
+        #Exactitud = (TP + TN) / (TP + TN + FP + FN)
+
     def accuracy(cm):
         return np.trace(cm) / np.sum(cm)
-
     
     def precision(cm):
         tp = np.diag(cm)
@@ -399,6 +420,7 @@ def metrics(cm):
         ious = iou(cm)
         return np.mean(ious)
 
+    acc_per_class = accuracy_por_clase(cm)
     acc = accuracy(cm)
     prec = precision(cm)
     rec = recall(cm)
@@ -411,7 +433,7 @@ def metrics(cm):
     #print("Recall:", rec)
     #print("F1 score:", f1)
     #print("mIoU:", miou)
-    return acc, prec, rec, f1, miou
+    return acc_per_class, acc, prec, rec, f1, miou
 
 if __name__ == "__main__":
 
