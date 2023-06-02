@@ -218,6 +218,7 @@ def benchmark_final(net, dataloader, num_classes):
     total_pred = np.empty(0)
     total_target = np.empty(0)
 
+    """
     class_dict = {
         0: "Sin clasificar",
         1: "Suelo",
@@ -230,6 +231,10 @@ def benchmark_final(net, dataloader, num_classes):
         8: "Coche",
         9: "Vegetación"
         }
+    """
+    class_dict = {0: 'Suelo', 1: 'Edificio', 2: 'Señales', 3: 'Bolardo', 4: 'Papelera', 5: 'Barrier', 6: 'Peaton', 7: 'Coche', 8: 'Vegetación'}
+
+
 
     primero = True
 
@@ -237,6 +242,7 @@ def benchmark_final(net, dataloader, num_classes):
         for batch_idx, sample in enumerate(tqdm(dataloader)):
 
             points, labels = sample['points'], sample['labels']
+
             points = points.transpose(1, 2).contiguous()
             points = points.to(device, dtype)
 
@@ -276,6 +282,7 @@ def benchmark_final(net, dataloader, num_classes):
                 print("-------------")
                 print("-------------")
                 """
+
                 total_target = np.concatenate((total_target, target_label_reshaped))
 
             
@@ -429,7 +436,7 @@ if __name__ == "__main__":
     dataloader, validation_dataloader, test_dataloader, criterion, optimizer, blue, device, dtype, num_batch, num_classes, net = DatasetandTrainingConfiguration(opt.train_dataset, opt.validation_dataset, opt.test_dataset)
 
     if opt.behaviour == 'trainval':
-        Train(net, dataloader, device, dtype, optimizer, num_classes, num_batch, validation_dataloader, opt.patience)
+        #Train(net, dataloader, device, dtype, optimizer, num_classes, num_batch, validation_dataloader, opt.patience)
         benchmark_final(net, test_dataloader, num_classes) #antes se estaba pasando el validation, con el nuevo cambio esto es test
 
     if opt.behaviour == 'test':

@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 todos_dataframes = []
+"""
 relaciones = {
     0: "Sin clasificar",
     1: "Suelo",
@@ -15,6 +16,10 @@ relaciones = {
     8: "Coche",
     9: "Vegetación"
     }
+"""
+
+relaciones = {0: 'Suelo', 1: 'Edificio', 2: 'Señales', 3: 'Bolardo', 4: 'Papelera', 5: 'Barrier', 6: 'Peaton', 7: 'Coche', 8: 'Vegetación'}
+
 
 
 def muestra_matriz_confusion(cf_matrix):

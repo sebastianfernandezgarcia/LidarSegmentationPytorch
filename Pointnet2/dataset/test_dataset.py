@@ -72,6 +72,7 @@ class Aerolaser_Test(Dataset):
         #time.sleep(30)
 
         cls = torch.from_numpy(np.array([c]).astype(np.int64))
+        cls = torch.sub(cls, 1)
         cls = np.transpose(cls)
         
         #choice = np.random.choice(point_set.shape[0], self.npoints, replace=True)
@@ -93,4 +94,4 @@ class Aerolaser_Test(Dataset):
         return len([entry for entry in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path, entry))])
     
     def num_classes(self):
-        return 10#8 #self.dataset.num_classes
+        return 9#10#8 #self.dataset.num_classes

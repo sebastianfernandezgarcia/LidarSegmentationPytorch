@@ -147,7 +147,7 @@ def split_dataset(output_folder):
             grouped = df.groupby(['grid_x', 'grid_y'])
 
             # Create 'segments' directory if it doesn't exist
-            os.makedirs('segments', exist_ok=True)
+            os.makedirs('train', exist_ok=True)
 
             # Loop over each group
             for i, (name, group) in enumerate(grouped):
@@ -158,7 +158,7 @@ def split_dataset(output_folder):
                 group_array = group.to_numpy()
 
                 # Save to .npy file, appending group name to filename
-                output_filename = os.path.join('segments', f'{base_filename}_{i}.npy')
+                output_filename = os.path.join('train', f'{base_filename}_{i}.npy')
                 if len(group_array) > 1:
                     #print(output_filename)
                     np.save(output_filename, group_array)

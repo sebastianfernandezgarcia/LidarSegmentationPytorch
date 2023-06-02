@@ -5,6 +5,7 @@ Pointnet2/aerolaser_validation/
 Datasets/ParisLille/segments/
 Datasets/ParisLille/test_10_classes/
 Datasets/ParisLille/testFAKE/
+Datasets/ParisLille/rawfaketest/
 Datasets/ParisLille/train/
 Datasets/ParisLille/training_10_classes/
 Datasets/ParisLille/antiguoelprmerosiconsiguesmejorarborrarestoParisLille.zip

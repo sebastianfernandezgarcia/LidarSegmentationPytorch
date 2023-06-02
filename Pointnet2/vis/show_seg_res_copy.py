@@ -16,7 +16,7 @@ import time
 
 ##
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', type=str, default=r'../paris_faketest/', help='dataset path')
+parser.add_argument('--dataset', type=str, default=r'../paris_faketest/procesados4096-0_1/', help='dataset path')
 parser.add_argument('--category', type=str, default='Airplane', help='select category')
 parser.add_argument('--npoints', type=int, default=2500, help='resample points number')
 parser.add_argument('--model', type=str, default='../checkpoint/checkpoint.pt', help='model path') #cambiar el nombre de los pesos, pongo 19 porque voy a haver epoc 20

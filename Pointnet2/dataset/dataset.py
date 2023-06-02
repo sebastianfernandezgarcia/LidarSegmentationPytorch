@@ -32,13 +32,15 @@ class Aerolaser(Dataset):
         #v = pptk.viewer(xyz, r, c, l)
         point_set = torch.from_numpy(xyz.astype(np.float32))  #pointset por ahora es xyz, podría ser todo
 
-        cls = torch.from_numpy(np.array([c]).astype(np.int64))
-        cls = np.transpose(cls)
         
+        cls = torch.from_numpy(np.array([c]).astype(np.int64))
+        cls = torch.sub(cls, 1)
+        cls = np.transpose(cls)
+    
         choice = np.random.choice(point_set.shape[0], self.npoints, replace=True)
         points, labels = point_set[choice, :], cls[choice]
 
-        points, labels = point_set, cls
+        points, labels = point_set, cls  #SE ESTA OGNPRANDO EL RANDOM Y SE TRAEN PREPROCESADOS
         
         sample = {
             'points': points,  # torch.Tensor (n, 3)
@@ -51,4 +53,4 @@ class Aerolaser(Dataset):
         return len([entry for entry in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path, entry))])
     
     def num_classes(self):
-        return 10#8 #self.dataset.num_classes
+        return 9#10#8 #self.dataset.num_classes
