@@ -210,6 +210,7 @@ def training_eval(epoch):
         return val_loss 
         #torch.save(net.state_dict(), '{}/seg_model_{}_{}.pth'.format(opt.outf, "aerolaser_pesos", epoch)) #model saves inside early_stipping if model is better that last epoch
 
+
 def benchmark_final(net, dataloader, num_classes):
     #BenchMark (Confusion Matrix, mIOU)
     print("Starting Final Benchmark")
@@ -285,7 +286,8 @@ def benchmark_final(net, dataloader, num_classes):
 
                 total_target = np.concatenate((total_target, target_label_reshaped))
 
-            
+
+
             batch_size = target_label.shape[0]
             
             for shape_idx in range(batch_size):
@@ -298,7 +300,7 @@ def benchmark_final(net, dataloader, num_classes):
                     else: iou = float(I) / U
                     part_ious.append(iou)
                 shape_ious.append(np.mean(part_ious))
-            
+
         cf_matrix = confusion_matrix(total_pred.flatten(), total_target.flatten())
         
         cf_matrix_de_CHANO = np.array([[9857295, 172798, 30325, 2226, 451, 49382, 295, 36221],
@@ -345,7 +347,7 @@ def benchmark_final(net, dataloader, num_classes):
         print("---------------")
         print("Confussion")
 
-        acc, prec, rec, f1, miou = metrics(cf_matrix)
+        acc_per_class, acc, prec, rec, f1, miou = metrics(cf_matrix)
 
         print("Overall Acc: ", acc)
         print("Overall mIOU: ", miou)
@@ -363,19 +365,17 @@ def benchmark_final(net, dataloader, num_classes):
         logging.info('Overall F1 Score (All classes): {}'.format(f1))  
 
 
-        print(prec)
-        print(prec.shape)
-        time.sleep(20)
         for current_class in range(len(prec)):
 
             print("---------------------------")
 
-
+            print('Accuracy for class {}: {}'.format(class_dict[current_class], acc_per_class[current_class]))
             print('Precision for class {}: {}'.format(class_dict[current_class], prec[current_class]))
             print('Recall  for class {}: {}'.format(class_dict[current_class], rec[current_class]))
             print('F1 Score for class {}: {}'.format(class_dict[current_class], f1[current_class]))
             
             logging.info('---------------------------')
+            logging.info('Accuracy for class {}: {}'.format(class_dict[current_class], acc_per_class[current_class]))
             logging.info('Precision for class {}: {}'.format(class_dict[current_class], prec[current_class]))
             logging.info('Recall  for class {}: {}'.format(class_dict[current_class], rec[current_class]))
             logging.info('F1 Score for class {}: {}'.format(class_dict[current_class], f1[current_class]))
@@ -383,6 +383,17 @@ def benchmark_final(net, dataloader, num_classes):
     print('Done.')
 
 def metrics(cm):
+    def accuracy_por_clase(cm):
+        tp = np.diag(cm)
+        fp = np.sum(cm, axis=0) - tp
+        tn = np.sum(cm) - np.sum(cm, axis=0) - np.sum(cm, axis=1) + np.diag(cm)
+        fn = np.sum(cm, axis=1) - np.diag(cm)
+
+        acc = (tp+tn)/(tp+tn+fp+fn)
+
+        return acc
+        #Exactitud = (TP + TN) / (TP + TN + FP + FN)
+
     def accuracy(cm):
         return np.trace(cm) / np.sum(cm)
 
@@ -415,7 +426,8 @@ def metrics(cm):
     def mean_iou(cm):
         ious = iou(cm)
         return np.mean(ious)
-
+    
+    acc_per_class = accuracy_por_clase(cm)
     acc = accuracy(cm)
     prec = precision(cm)
     rec = recall(cm)
@@ -428,7 +440,7 @@ def metrics(cm):
     #print("Recall:", rec)
     #print("F1 score:", f1)
     #print("mIoU:", miou)
-    return acc, prec, rec, f1, miou
+    return acc_per_class, acc, prec, rec, f1, miou
 
 if __name__ == "__main__":
 
@@ -436,7 +448,7 @@ if __name__ == "__main__":
     dataloader, validation_dataloader, test_dataloader, criterion, optimizer, blue, device, dtype, num_batch, num_classes, net = DatasetandTrainingConfiguration(opt.train_dataset, opt.validation_dataset, opt.test_dataset)
 
     if opt.behaviour == 'trainval':
-        Train(net, dataloader, device, dtype, optimizer, num_classes, num_batch, validation_dataloader, opt.patience)
+        #Train(net, dataloader, device, dtype, optimizer, num_classes, num_batch, validation_dataloader, opt.patience)
         benchmark_final(net, test_dataloader, num_classes) #antes se estaba pasando el validation, con el nuevo cambio esto es test
 
     if opt.behaviour == 'test':
