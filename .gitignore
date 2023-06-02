@@ -2,6 +2,13 @@ Pointnet2/aerolaser_test/
 Pointnet2/aerolaser_train/
 Pointnet2/aerolaser_validation/
 
+Datasets/ParisLille/
+
+Pointnet2/paris_train/
+Pointnet2/paris_test/
+Pointnet2/paris_validation/
+Pointnet2/paris_faketest/
+
 Datasets/Aerolaser/train/
 Datasets/Aerolaser/test/
 RandLA-Net/runs/

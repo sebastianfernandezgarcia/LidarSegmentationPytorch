@@ -51,4 +51,4 @@ class Aerolaser(Dataset):
         return len([entry for entry in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path, entry))])
     
     def num_classes(self):
-        return 8 #self.dataset.num_classes
+        return 10#8 #self.dataset.num_classes
