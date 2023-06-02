@@ -190,9 +190,11 @@ def training_eval(epoch):
             points, labels = data['points'], data['labels']
             points = points.transpose(1, 2).contiguous()
             points, labels = points.to(device), labels.to(device, torch.long)
+            
             pred = net(points)
             pred = pred.view(-1, num_classes)
             target = labels.view(-1, 1)[:, 0]
+            target=target.add(1) #le añadimos uno porque en dataloader se resto uno para que paris funcionase.
             val_loss += F.nll_loss(pred, target, reduction='sum').item()
             pred_label = pred.detach().max(1)[1]
             correct += pred_label.eq(target.detach()).cpu().sum().item()
