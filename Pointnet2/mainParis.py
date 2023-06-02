@@ -436,7 +436,7 @@ if __name__ == "__main__":
     dataloader, validation_dataloader, test_dataloader, criterion, optimizer, blue, device, dtype, num_batch, num_classes, net = DatasetandTrainingConfiguration(opt.train_dataset, opt.validation_dataset, opt.test_dataset)
 
     if opt.behaviour == 'trainval':
-        #Train(net, dataloader, device, dtype, optimizer, num_classes, num_batch, validation_dataloader, opt.patience)
+        Train(net, dataloader, device, dtype, optimizer, num_classes, num_batch, validation_dataloader, opt.patience)
         benchmark_final(net, test_dataloader, num_classes) #antes se estaba pasando el validation, con el nuevo cambio esto es test
 
     if opt.behaviour == 'test':
