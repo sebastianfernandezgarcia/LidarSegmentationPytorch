@@ -7,7 +7,7 @@ import glob
 
 class Aerolaser_Test(Dataset):
 
-    def __init__(self, train_dir=r'../aerolaser', test_dir=r'../aerolaser_validation/', train=True, transform=None, npoints=2500):
+    def __init__(self, train_dir=r'../aerolaser', test_dir=r'../aerolaser_validation/', train=True, transform=None, npoints=4096):
         #(self, root, npoints=5000, datapath='split_de_paris10clases/reduced10k/normalized'):
         self.npoints = npoints
         #self.root_dir = root_dir

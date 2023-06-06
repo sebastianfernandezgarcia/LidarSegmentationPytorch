@@ -290,14 +290,66 @@ def benchmark_final(net, dataloader, num_classes):
                     else: iou = float(I) / U
                     part_ious.append(iou)
                 shape_ious.append(np.mean(part_ious))
-
+        
         #print(type(total_target.flatten()))
         total_target = np.add(total_target.flatten(), 1)
         #print(np.unique(total_pred.flatten()))
         #print(np.unique(total_target.flatten()))
         #time.sleep(20)
 
-        cf_matrix = confusion_matrix(total_pred.flatten(), total_target.flatten())
+
+        #aqui sacar accuracys desde total pred y total target.
+
+        from collections import Counter
+        from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score, classification_report
+        #y_true = [0, 1, 2, 1, 0, 1, 2, 0, 1, 2, 0, 0, 1, 2, 2, 1, 0, 2, 1, 0]
+        #y_pred = [0, 1, 0, 1, 0, 2, 2, 0, 1, 2, 0, 1, 1, 2, 2, 0, 0, 2, 1, 0]
+
+
+        y_true = total_target.flatten()
+        y_pred = total_pred.flatten()
+        
+
+
+
+        print("----------------------")
+        precision = precision_score(y_true, y_pred, average=None)
+        recall = recall_score(y_true, y_pred, average=None)
+        f1 = f1_score(y_true, y_pred, average=None)
+        accuracy = accuracy_score(y_true, y_pred)
+
+        print(f'Precision per class: {precision}')
+        print(f'Recall per class: {recall}')
+        print(f'F1 score per class: {f1}')
+        print(f'Overall accuracy: {accuracy}')
+
+
+
+        print("Report de Sklearn")
+        logging.info("\n ------------------------------ \n")
+        logging.info("Report de Sklearn:")
+        logging.info(classification_report(y_true, y_pred))
+        print(classification_report(y_true, y_pred))
+        logging.info("\n ------------------------------ \n")
+        # Inicializar un diccionario para almacenar los aciertos por clase
+        class_accuracies = {}
+
+        
+        true_counts = Counter(y_true)
+
+        # Calcular el accuracy por clase
+        for class_label in true_counts.keys():
+            true_positive = sum(1 for y_true, y_pred in zip(y_true, y_pred) if y_true == class_label and y_pred == class_label)
+            total_examples = true_counts[class_label]
+            class_accuracies[class_label] = true_positive / total_examples
+
+        #print(class_accuracies)
+        sorted_accuracy_values = [value for key, value in sorted(class_accuracies.items())]
+        #print(sorted_accuracy_values)
+        #time.sleep(20)
+
+
+        cf_matrix = confusion_matrix(total_target.flatten(), total_pred.flatten())
         
         cf_matrix_de_CHANO = np.array([[9857295, 172798, 30325, 2226, 451, 49382, 295, 36221],
               [472961, 3303423, 15047, 30569, 3168, 54343, 6088, 38344],
@@ -343,10 +395,13 @@ def benchmark_final(net, dataloader, num_classes):
         print("---------------")
         print("Confussion")
 
-        acc_per_class, acc, prec, rec, f1, miou = metrics(cf_matrix)
+        #el accuracy por clase te lo traes de sorted_accuracy_values
+        acc_con_formula, acc, prec, rec, f1, miou = metrics(cf_matrix)
 
         print("Overall Acc: ", acc)
         print("Overall mIOU: ", miou)
+        print("Overall Accuracy (C/T) por clase: ", sorted_accuracy_values)
+        print("Overall Accuracy (F/MC) por clase: ", acc_con_formula)
         print("Overall Precision (All classes): ", prec)
         print("Overall Recall (All classes): ", rec)
         print("Overall F1 Score (All classes): ", f1)
@@ -355,7 +410,8 @@ def benchmark_final(net, dataloader, num_classes):
         logging.info('Overall Acc: {}'.format(acc))
         logging.info('Overall mIOU: {}'.format(miou))
 
-
+        logging.info('Overall Accuracy (C/T) por clase {}'.format(sorted_accuracy_values))
+        logging.info('Overall Accuracy (F/MC) por clase {}'.format(acc_con_formula))
         logging.info('Overall Precision (All classes): {}'.format(prec))  
         logging.info('Overall Recall (All classes): {}'.format(rec))  
         logging.info('Overall F1 Score (All classes): {}'.format(f1))  
@@ -365,13 +421,15 @@ def benchmark_final(net, dataloader, num_classes):
 
             print("---------------------------")
 
-            print('Accuracy for class {}: {}'.format(class_dict[current_class], acc_per_class[current_class]))
+            print('Accuracy (C/T) for class {}: {}'.format(class_dict[current_class], sorted_accuracy_values[current_class]))
+            print('Accuracy (F/MC)for class {}: {}'.format(class_dict[current_class], acc_con_formula[current_class]))
             print('Precision for class {}: {}'.format(class_dict[current_class], prec[current_class]))
             print('Recall  for class {}: {}'.format(class_dict[current_class], rec[current_class]))
             print('F1 Score for class {}: {}'.format(class_dict[current_class], f1[current_class]))
             
             logging.info('---------------------------')
-            logging.info('Accuracy for class {}: {}'.format(class_dict[current_class], acc_per_class[current_class]))
+            logging.info('Accuracy (C/T) for class {}: {}'.format(class_dict[current_class], sorted_accuracy_values[current_class]))
+            logging.info('Accuracy (F/MC) for class {}: {}'.format(class_dict[current_class], acc_con_formula[current_class]))
             logging.info('Precision for class {}: {}'.format(class_dict[current_class], prec[current_class]))
             logging.info('Recall  for class {}: {}'.format(class_dict[current_class], rec[current_class]))
             logging.info('F1 Score for class {}: {}'.format(class_dict[current_class], f1[current_class]))
@@ -379,6 +437,7 @@ def benchmark_final(net, dataloader, num_classes):
     print('Done.')
 
 def metrics(cm):
+    """
     def accuracy_por_clase(cm):
         tp = np.diag(cm)
         fp = np.sum(cm, axis=0) - tp
@@ -389,14 +448,40 @@ def metrics(cm):
 
         return acc
         #Exactitud = (TP + TN) / (TP + TN + FP + FN)
-
+    """
     def accuracy(cm):
         return np.trace(cm) / np.sum(cm)
+
+    def accuracy_formula(cm):
+        tp = np.diag(cm)
+        fp = np.sum(cm, axis=0) - tp
+        fn = np.sum(cm, axis=1) - tp
+        tn = np.sum(cm) - np.sum(cm, axis=0) - np.sum(cm, axis=1) + np.diag(cm)
+        return (tp + tn) / (tp + tn + fp + fn)
+    
     
     def precision(cm):
+        """
+        num_classes = cm.shape[0]
+        precisions = []
+
+        for i in range(num_classes):
+            TP = cm[i, i]
+            FP = np.sum(cm[:, i]) - TP
+            precision = TP / (TP + FP)
+            precisions.append(precision)
+
+        print("Precision for each class:")
+        for i, precision in enumerate(precisions):
+            print(f"Class {i}: {precision}")
+
+        time.sleep(30)
+        """
+        
         tp = np.diag(cm)
         fp = np.sum(cm, axis=0) - tp
         return tp / (tp + fp)
+        
 
     def recall(cm):
         tp = np.diag(cm)
@@ -421,21 +506,20 @@ def metrics(cm):
     def mean_iou(cm):
         ious = iou(cm)
         return np.mean(ious)
-
-    acc_per_class = accuracy_por_clase(cm)
+    
+    #acc_per_class = accuracy_por_clase(cm)
     acc = accuracy(cm)
-    prec = precision(cm)
-    rec = recall(cm)
+    precision_matrix = precision(cm)
+    recall_matrix = recall(cm)
     f1 = f1_score(cm)
     miou = mean_iou(cm)
-
-    
+    acc_con_formula = accuracy_formula(cm)
     #print("Accuracy:", acc)
     #print("Precision:", prec)
     #print("Recall:", rec)
     #print("F1 score:", f1)
     #print("mIoU:", miou)
-    return acc_per_class, acc, prec, rec, f1, miou
+    return acc_con_formula, acc, precision_matrix, recall_matrix, f1, miou
 
 if __name__ == "__main__":
 

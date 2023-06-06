@@ -10,6 +10,8 @@ Datasets/ParisLille/train/
 Datasets/ParisLille/training_10_classes/
 Datasets/ParisLille/antiguoelprmerosiconsiguesmejorarborrarestoParisLille.zip
 
+Datasets/ModelNet40/
+Datasets/Toronto_3D/
 
 Pointnet2/paris_train/
 Pointnet2/paris_test/
