@@ -12,8 +12,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 #fom torch.utils.tensorboard import SummaryWriter
 
-#from data import data_loaders
-from data_paris import data_loaders
+from data import data_loaders
+#from data_paris import data_loaders
 #from dataVox import data_loaders
 
 from model import RandLANet
@@ -252,7 +252,7 @@ def train(args):
             #time.sleep(20)
             ious.append(intersection_over_union2(scores, labels))
 
-        if (epoch % 1 == 0): #step del schedler cada 3 pasos
+        if (epoch % 20 == 0): #step del schedler cada 3 pasos
             print("Scheduler reducido en la epoch, ", scheduler)
             scheduler.step()                                             ######################################################################################step quitado
 
@@ -345,7 +345,7 @@ if __name__ == '__main__':
                         default='')
 
     param.add_argument('--adam_lr', type=float, help='learning rate of the optimizer',
-                        default=0.001) #1e-2)
+                        default=0.0001) #1e-2)
     #param.add_argument('--batch_size', type=int, help='batch size',
                         #default=1)
     param.add_argument('--decimation', type=int, help='ratio the point cloud is divided by at each layer',
