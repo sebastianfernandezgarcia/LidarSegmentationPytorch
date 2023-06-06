@@ -12,8 +12,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 #fom torch.utils.tensorboard import SummaryWriter
 
-#from data import data_loaders
-from data_paris import data_loaders
+from data import data_loaders
+#from data_paris import data_loaders
 #from dataVox import data_loaders
 
 from model import RandLANet
@@ -57,7 +57,7 @@ def train(args):
     except FileNotFoundError:
         #num_classes = int(input("Number of distinct classes in the dataset: "))
     """
-    num_classes = 9
+    #num_classes = 8
     
     #num_classes_metodo
 
@@ -100,30 +100,10 @@ def train(args):
     eval_test_dataloader = torch.utils.data.DataLoader(
         eval_test_dataset, batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers)
     """
+#######
 
 
-
-    d_in = next(iter(train_loader))[0].size(-1)
-
-    #d_in = next(iter(train_loader))['points'].size(-1)
-    print(d_in)
-
-        #net = net.to(device, dtype)
-    device_to = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-    dtype = torch.float
-
-
-    model = RandLANet(
-        d_in,
-        num_classes,
-        num_neighbors=args.neighbors,
-        decimation=args.decimation,
-        device=device_to
-    )
-
-
-    model = model.to(device_to) #
-
+######
     print('Computing weights...', end='\t')
 
     """
@@ -157,6 +137,38 @@ def train(args):
     print(label_counts)
     label_counts_values = list(label_counts.values())
     print(label_counts_values)
+
+    num_classes = len(label_counts_values)  #numero de clases es el numero de etiquetas diferentes que hay
+
+    ##############
+
+    d_in = next(iter(train_loader))[0].size(-1)
+
+    #d_in = next(iter(train_loader))['points'].size(-1)
+    print(d_in)
+
+        #net = net.to(device, dtype)
+    device_to = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+    dtype = torch.float
+
+
+    model = RandLANet(
+        d_in,
+        num_classes,
+        num_neighbors=args.neighbors,
+        decimation=args.decimation,
+        device=device_to
+    )
+
+
+    model = model.to(device_to) #
+
+
+
+
+
+
+    #################
 
     n_muestras = torch.tensor(label_counts_values, dtype=torch.float, device=args.gpu)
     #print(n_muestras)
