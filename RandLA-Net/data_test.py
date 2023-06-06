@@ -7,10 +7,11 @@ from torch.utils.data import Dataset, IterableDataset, DataLoader, Sampler, Batc
 from utils.tools import Config as cfg
 from utils.tools import DataProcessing as DP
 import os
+import random
 
 class PointCloudsDataset(Dataset):
 
-    def __init__(self, train_dir=r'./dataset_final_pruebas_balanceo_8/train/train/', test_dir=r'./dataset_final_pruebas_balanceo_8/train/validation/', train=True, transform=None, npoints=4096): #4096
+    def __init__(self, train_dir=r'./dataset_final_pruebas_balanceo_8/train/train/', test_dir=r'./dataset_final_pruebas_balanceo_8/train/validation/', train=True, transform=None, npoints=16384): #4096
         #(self, root, npoints=5000, datapath='split_de_paris10clases/reduced10k/normalized'):
         self.npoints = npoints
         #self.root_dir = root_dir
@@ -91,7 +92,7 @@ class PointCloudsDataset(Dataset):
         #points, labels, denormalized_point = point_set, cls, DENORMALIZED_POINT_SET#############
 
         #SE ESTAN PASANDO LOS ORIGINALES
-        points, labels, denormalized_point = point_set, cls, DENORMALIZED_POINT_SET
+        #points, labels, denormalized_point = point_set, cls, DENORMALIZED_POINT_SET
         return points, labels, denormalized_point
 
     def __len__(self):
@@ -325,7 +326,15 @@ def data_loaders_original(dir, sampling_method='active_learning', **kwargs):
 
         #test_dataset = PointCloudsDataset('dataset_final_pruebas_balanceo_8/test/') #('dataset_final/test/') #('dataset_final_pruebas_balanceo_2/test/')
         #>>>test_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/test/procesados1024-1_1/') #('dataset_final/test/') #('dataset_final_pruebas_balanceo_2/test/')
-        test_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/overfit50k-1/test/')
+                #Ponemos semilla
+        seed = 42  # Puedes elegir cualquier número entero como semilla
+
+        random.seed(seed)
+        np.random.seed(seed)
+        torch.manual_seed(seed)
+        
+        
+        test_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/test/procesados50000-0_1')
         return DataLoader(test_dataset, **kwargs) #DataLoader(train_dataset, shuffle=True, **kwargs), DataLoader(val_dataset, **kwargs), 
 
     raise ValueError(f"Dataset sampling method '{sampling_method}' does not exist.")
