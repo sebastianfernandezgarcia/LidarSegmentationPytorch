@@ -12,8 +12,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 #fom torch.utils.tensorboard import SummaryWriter
 
-from data import data_loaders
-
+#from data import data_loaders
+from data_paris import data_loaders
 #from dataVox import data_loaders
 
 from model import RandLANet
@@ -49,13 +49,15 @@ def train(args):
     logs_dir.mkdir(exist_ok=True, parents=True)
 
     # determine number of classes
+    """
     try:
         with open(args.dataset / 'classes.json') as f:
             labels = json.load(f)
             num_classes = len(labels.keys())
     except FileNotFoundError:
         #num_classes = int(input("Number of distinct classes in the dataset: "))
-        num_classes = 8
+    """
+    num_classes = 10
     
     train_loader, val_loader, _ = data_loaders(
         args.dataset,
@@ -163,11 +165,17 @@ def train(args):
     pesos = 1 / (ratio_muestras + 0.02) # + 0.02
     #print(pesos)
     #time.sleep(50)
+    zero = torch.tensor([0])
+    zero = zero.to(device_to)
+
+    tensor_modificado = torch.cat((zero, pesos))
+    tensor_modificado = tensor_modificado.to(device_to)
+    #tensor_modificado = tensor_modificado.to(device_to)
     pesos = pesos.to(device_to)
     print('Done.')
     #print('Weights:', weights)
 
-
+    
     mis_pesos = torch.tensor([0.1, 0.1, 100.0, 100.0, 1.0, 1.0, 100.0, 0.1], dtype=torch.float, device=args.gpu) 
     #print('Mis Pesos:', mis_pesos)
 
@@ -176,7 +184,7 @@ def train(args):
     ####
     ## Esto se hacía con cfg.class_weights, ver como hacer algo similar.
     ####
-    criterion = nn.CrossEntropyLoss(weight=pesos) #weight=pesos  weight=pesos  #weight=pesos  #weight=pesos      #weight=weights) weight=pesos
+    criterion = nn.CrossEntropyLoss(weight=tensor_modificado) #weight=pesos  weight=pesos  #weight=pesos  #weight=pesos      #weight=weights) weight=pesos
 
     optimizer = torch.optim.Adam(model.parameters(), lr=args.adam_lr)
 
@@ -233,7 +241,7 @@ def train(args):
             loss = criterion(logp, labels.squeeze())
             # logpy = torch.gather(logp, 1, labels)
             # loss = -(logpy).mean()
-
+            
             loss.backward()
 
             optimizer.step()
@@ -244,7 +252,7 @@ def train(args):
             #time.sleep(20)
             ious.append(intersection_over_union2(scores, labels))
 
-        if (epoch % 3 == 0): #step del schedler cada 3 pasos
+        if (epoch % 1 == 0): #step del schedler cada 3 pasos
             print("Scheduler reducido en la epoch, ", scheduler)
             scheduler.step()                                             ######################################################################################step quitado
 
@@ -337,7 +345,7 @@ if __name__ == '__main__':
                         default='')
 
     param.add_argument('--adam_lr', type=float, help='learning rate of the optimizer',
-                        default=1e-2) #1e-2)
+                        default=0.001) #1e-2)
     #param.add_argument('--batch_size', type=int, help='batch size',
                         #default=1)
     param.add_argument('--decimation', type=int, help='ratio the point cloud is divided by at each layer',
@@ -372,7 +380,7 @@ if __name__ == '__main__':
     parser.add_argument('--train_dataset', type=str, default=r'./dataset_final_pruebas_balanceo_2/train/train/', help='train datasetfolder')
 
     parser.add_argument('--npoints', type=int, default=16384, help='resample points number') 
-    parser.add_argument('--batch_size', type=int, default=30, help='input batch size')   #Change here batchSize if needed
+    parser.add_argument('--batch_size', type=int, default=16, help='input batch size')   #Change here batchSize if needed
     parser.add_argument('--patience', type=int, default=10, help='the patience the training earlystoping will have')   #Chane patience if needed
     parser.add_argument('--num_workers', type=int, default=0, help='number of data loading workers')
 
