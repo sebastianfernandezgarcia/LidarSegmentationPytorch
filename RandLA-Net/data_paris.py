@@ -50,16 +50,16 @@ class PointCloudsDataset(Dataset):
 
         cls = torch.from_numpy(np.array([c]).astype(np.int64))
         cls = np.transpose(cls)
-        
+        cls = cls - 1
         choice = np.random.choice(point_set.shape[0], self.npoints, replace=True)
         points, labels = point_set[choice, :], cls[choice]
         
 
         #equiparado de clase resta 1
-        cls = cls - 1
+        #cls = cls - 1
         #AHORA SE COGEN DIRECTAMENTE
-        points = point_set
-        labels = cls
+        #points = point_set
+        #labels = cls
         #points, labels = point_set, cls
 
         #points_tensor = torch.from_numpy(points).float()
@@ -301,12 +301,12 @@ def data_loaders(dir, sampling_method='active_learning', **kwargs):
         np.random.seed(seed)
         torch.manual_seed(seed)
 
-        train_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github2/LidarSegmentationPytorch/Datasets/ParisLille/train/train/procesados16384-0_1') #overfit50k-1/')#train/train/procesados50000-0_1/')    #('dataset_final/train/train/')  
+        train_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github2/LidarSegmentationPytorch/Datasets/ParisLille/train_10metros/train/procesados50000-0_1') #overfit50k-1/')#train/train/procesados50000-0_1/')    #('dataset_final/train/train/')  
         #>>>train_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/moviendoAlServidor/Pointnet2Aerolaser/nuevaparticion/train/train/procesados50-1_1/')     #('dataset_final/train/train/')      #('dataset_final_pruebas_balanceo_2/train/train/')
         #val_dataset = PointCloudsDataset(dir / 'validation') Datasets\Aerolaser\train\train\procesados1024-1_1
         #>>>>val_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/moviendoAlServidor/Pointnet2Aerolaser/nuevaparticion/train/validation/procesados50-1_1/')  #('dataset_final/train/validation/') #('dataset_final_pruebas_balanceo_2/train/validation/')
-        val_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github2/LidarSegmentationPytorch/Datasets/ParisLille/train/validation/procesados16384-0_1') #overfit50k-1/')#train/validation/procesados50000-0_1/') #('dataset_final/train/validation/') #
-        test_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github2/LidarSegmentationPytorch/Datasets/ParisLille/testFAKE/procesados16384-0_1') #overfit50k-1/')#test/procesados50000-0_1/') #('dataset_final/test/') #('dataset_final_pruebas_balanceo_2/test/')
+        val_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github2/LidarSegmentationPytorch/Datasets/ParisLille/train_10metros/validation/procesados50000-0_1') #overfit50k-1/')#train/validation/procesados50000-0_1/') #('dataset_final/train/validation/') #
+        test_dataset = PointCloudsDataset(r'C:/Users/sfernandez/nueva_etapa/github2/LidarSegmentationPytorch/Datasets/ParisLille/train_10metros/testFAKE/procesados50000-0_1') #overfit50k-1/')#test/procesados50000-0_1/') #('dataset_final/test/') #('dataset_final_pruebas_balanceo_2/test/')
         return DataLoader(train_dataset, shuffle=True, **kwargs), DataLoader(val_dataset, **kwargs), DataLoader(test_dataset, **kwargs)
 
     raise ValueError(f"Dataset sampling method '{sampling_method}' does not exist.")

@@ -10,6 +10,8 @@ Datasets/ParisLille/train/
 Datasets/ParisLille/training_10_classes/
 Datasets/ParisLille/antiguoelprmerosiconsiguesmejorarborrarestoParisLille.zip
 
+Datasets/ParisLille/train_10metros/
+
 Datasets/ModelNet40/
 Datasets/Toronto_3D/
 
@@ -20,9 +22,14 @@ Pointnet2/paris_faketest/
 
 Pointnet2/siconsiguesmejorarparisborraresto.zip
 
+Datasets/Aerolaser/AerolaserProcesados16384.zip
+
 Datasets/Aerolaser/train/
 Datasets/Aerolaser/test/
 RandLA-Net/runs/
+
+RandLA-Net/runsParis10metros/
+
 RandLA-Net/runs/checkpoint_01.pth
 RandLA-Net/runs/checkpoint_02.pth
 RandLA-Net/runs/checkpoint_03.pth

@@ -137,7 +137,7 @@ def split_dataset(output_folder):
             df = pd.DataFrame(data, columns=['x', 'y', 'z', 'reflectance', 'class'])
 
             # Define grid size
-            grid_size = 20.0
+            grid_size = 10.0
 
             # Calculate grid indices
             df['grid_x'] = (df['x'] / grid_size).apply(math.floor)
@@ -158,7 +158,7 @@ def split_dataset(output_folder):
                 group_array = group.to_numpy()
 
                 # Save to .npy file, appending group name to filename
-                output_filename = os.path.join('train', f'{base_filename}_{i}.npy')
+                output_filename = os.path.join('train_10metros', f'{base_filename}_{i}.npy')
                 if len(group_array) > 1:
                     #print(output_filename)
                     np.save(output_filename, group_array)
@@ -240,7 +240,7 @@ def train_valid_split(source_folder):
 if __name__ == "__main__":
 
     if(opt.dataset_type == 'train'):
-        outputfolder = r'train/'
+        outputfolder = r'train_10metros/'
         #Create the destination folders if they don't already exist
         os.makedirs(outputfolder, exist_ok=True)
 
@@ -248,7 +248,7 @@ if __name__ == "__main__":
         train_valid_split(outputfolder)
 
     if opt.dataset_type == 'test':
-        outputfolder = r'test/'
+        outputfolder = r'test_10metros/'
         #Create the destination folders if they don't already exist
         os.makedirs(outputfolder, exist_ok=True)
         split_dataset(outputfolder)

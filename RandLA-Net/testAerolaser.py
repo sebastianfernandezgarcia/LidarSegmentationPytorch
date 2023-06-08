@@ -11,7 +11,7 @@ from data_test import data_loaders_original
 from model import RandLANet
 from utils.ply import read_ply, write_ply
 
-from vis.view_copy import view_points_labels
+from vis.view_copy_aerolaser import view_points_labels
 import tqdm
 from sklearn.metrics import confusion_matrix
 import logging
@@ -33,7 +33,7 @@ test_loader_original = data_loaders_original(path, 'naive')
 #print(loader)
 
 # Set up logging configuration
-logging.basicConfig(filename='MetricasRandLaNet.log', filemode='w', level=logging.DEBUG)
+logging.basicConfig(filename='MetricasRandLaNet_checkpoint_967servidor.log', filemode='w', level=logging.DEBUG)
 
 print('Loading model...')
 
@@ -41,7 +41,8 @@ d_in = 3
 num_classes = 8 #14
 
 model = RandLANet(d_in, num_classes, 16, 4, device)
-model.load_state_dict(torch.load('runs\checkpoint_374_mejor_torre_todo.pth')['model_state_dict'])  #'runs/2020-04-11_17:03/checkpoint_10.pth'
+#model.load_state_dict(torch.load('runs\checkpoint_374_mejor_torre_todo.pth')['model_state_dict'])  #'runs/2020-04-11_17:03/checkpoint_10.pth'
+model.load_state_dict(torch.load('runs\checkpoint_967servidor.pth')['model_state_dict'])  #checkpoint_950_servidor
 model.eval()
 
 """
@@ -357,6 +358,24 @@ with torch.no_grad():
 
 
 view_points_labels(all_original_points, all_pred_labels, all_pred_labels)
+
+
+def label_diff(pred_label, gt_label):
+    '''
+    Assign 1 if different label, or 0 if same label  
+    '''
+    diff = pred_label - gt_label
+    diff_mask = (diff != 0)
+
+    diff_label = np.zeros((pred_label.shape[0]), dtype=np.int32)
+    diff_label[diff_mask] = 1
+
+    return diff_label
+
+diff_labels = label_diff(all_pred_labels, all_gt_labels)
+
+#diff labels
+view_points_labels(all_original_points, diff_labels, all_gt_labels, diff=True)
 
 
 """

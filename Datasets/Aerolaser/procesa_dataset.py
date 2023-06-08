@@ -78,7 +78,7 @@ if opt.split == 'train':
     print("Procesando Train")
 
     las_dir = 'train/train/solopartidos/' #origen
-
+    las_dir = r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/train/train/solopartidos/'
     #Para guardar
     if(opt.range == 0):
         save_dir = 'train/train/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + '/'
@@ -89,6 +89,7 @@ if opt.split == 'validation':
     print("Procesando Validation")
 
     las_dir = 'train/validation/solopartidos/' #origen
+    las_dir = r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/train/validation/solopartidos/'
 
     if(opt.range == 0):
         save_dir = 'train/validation/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + '/'
@@ -99,6 +100,7 @@ if opt.split == 'test':
     print("Procesando Test")
 
     las_dir = 'test/solopartidos/' #origen
+    las_dir = r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/test/solopartidos/'
     #las_dir = 'train/train/solopartidos/' #origen
     if(opt.range == 0):
         save_dir = 'test/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + '/'

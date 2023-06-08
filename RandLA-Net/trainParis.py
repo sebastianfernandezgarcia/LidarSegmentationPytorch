@@ -205,11 +205,11 @@ def train(args):
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         #scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
         print("-__--")
-        diccionario = {'gamma': 0.95, 'base_lrs': [0.001], 'last_epoch': 50, 'verbose': False, '_step_count': 51, '_get_lr_called_within_step': False, '_last_lr': [0.001]}
-        diccionario['_last_lr'] = [0.001]
+        diccionario = {'gamma': 0.95, 'base_lrs': [0.1], 'last_epoch': 50, 'verbose': False, '_step_count': 51, '_get_lr_called_within_step': False, '_last_lr': [0.0000001]}
+        diccionario['_last_lr'] = [0.1]
         diccionario['last_epoch'] = 1
         diccionario['_step_count'] = 1
-        diccionario['gamma'] = 0.95
+        diccionario['gamma'] = 0.1
         scheduler.load_state_dict(diccionario)
         print("----")
         #print(type(checkpoint['scheduler_state_dict']))
@@ -254,7 +254,7 @@ def train(args):
             #time.sleep(20)
             ious.append(intersection_over_union2(scores, labels))
 
-        if (epoch % 20 == 0): #step del schedler cada 3 pasos
+        if (epoch % 30 == 0): #step del schedler cada 3 pasos
             print("Scheduler reducido en la epoch, ", scheduler)
             scheduler.step()                                             ######################################################################################step quitado
 
@@ -357,7 +357,7 @@ if __name__ == '__main__':
     param.add_argument('--neighbors', type=int, help='number of neighbors considered by k-NN',
                         default=16)
     param.add_argument('--scheduler_gamma', type=float, help='gamma of the learning rate scheduler',
-                        default=0.5)
+                        default=0.95)
 
     dirs.add_argument('--test_dir', type=str, help='location of the test set in the dataset dir',
                         default='test')
@@ -366,7 +366,7 @@ if __name__ == '__main__':
     dirs.add_argument('--val_dir', type=str, help='location of the validation set in the dataset dir',
                         default='val')
     dirs.add_argument('--logs_dir', type=Path, help='path to tensorboard logs',
-                        default='runs')
+                        default='runsParis10metros')
 
     misc.add_argument('--gpu', type=int, help='which GPU to use (-1 for CPU)',
                         default=0)

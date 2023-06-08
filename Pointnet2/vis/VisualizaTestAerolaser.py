@@ -23,7 +23,7 @@ parser = argparse.ArgumentParser()
 #parser.add_argument('--dataset', type=str, choices=[r'../paris_faketest/procesados4096-0_1/', r'../aerolaser_test/'], required=True, help='esta puestoas las optiones al lado de parser')
 parser.add_argument('--dataset', type=str, default=r'../aerolaser_test/', help='Dataset que se pasa')
 parser.add_argument('--category', type=str, default='Airplane', help='select category')
-parser.add_argument('--npoints', type=int, default=2500, help='resample points number')
+parser.add_argument('--npoints', type=int, default=4096, help='resample points number')
 parser.add_argument('--model', type=str, default='../checkpoint/checkpointPointnet2Aerolaser.pt', help='model path') 
 parser.add_argument('--sample_idx', type=int, default=0, help='select a sample to segment and view result')
 

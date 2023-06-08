@@ -78,21 +78,21 @@ if opt.split == 'train':
     print("Procesando Train")
 
     las_dir = 'train_a20metros/train/' #origen
-    las_dir = 'train/train/' #origen
+    las_dir = 'train_10metros/train/' #origen
     #Para guardar
     if(opt.range == 0):
-        save_dir = 'train/train/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + '/'
+        save_dir = 'train_10metros/train/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + '/'
     if(opt.range == -1):
-        save_dir = 'train/train/procesados' + str(opt.puntos_finales) + str(opt.range) + '_' + str(opt.range+2) + '/'
+        save_dir = 'train_10metros/train/procesados' + str(opt.puntos_finales) + str(opt.range) + '_' + str(opt.range+2) + '/'
     
 if opt.split == 'validation':
     print("Procesando Validation")
 
-    las_dir = 'train/validation/'
+    las_dir = 'train_10metros/validation/'
     if(opt.range == 0):
-        save_dir = 'train/validation/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + '/'
+        save_dir = 'train_10metros/validation/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + '/'
     if(opt.range == -1):
-        save_dir = 'train/validation/procesados' + str(opt.puntos_finales)  + str(opt.range) + '_' + str(opt.range+2) + '/'
+        save_dir = 'train_10metros/validation/procesados' + str(opt.puntos_finales)  + str(opt.range) + '_' + str(opt.range+2) + '/'
 
 if opt.split == 'test':
     print("Procesando Test")
@@ -100,11 +100,13 @@ if opt.split == 'test':
     #las_dir = 'test/solopartidos/' #origen
     #las_dir = 'train_a20metros/faketest/' #origen
     las_dir = 'rawfaketest/' #origen
+
+    las_dir = 'train_10metros/faketest10metros/'
     #las_dir = 'train/train/solopartidos/' #origen
     if(opt.range == 0):
-        save_dir = 'testFAKE/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + '/'
+        save_dir = 'train_10metros/testFAKE/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + '/'
     if(opt.range == -1):
-        save_dir = 'testFAKE/procesados' + str(opt.puntos_finales) + str(opt.range) + '_' + str(opt.range+2) + '/'
+        save_dir = 'train_10metros/testFAKE/procesados' + str(opt.puntos_finales) + str(opt.range) + '_' + str(opt.range+2) + '/'
 
 datos_fragmentos = []
 
