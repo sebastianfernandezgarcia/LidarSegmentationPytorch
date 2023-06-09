@@ -6,23 +6,23 @@ import torch
 import torch.nn as nn
 
 #from data import data_loaders
-from data_test import data_loaders_original
+from data_test_paris import data_loaders_original
 
 from model import RandLANet
 from utils.ply import read_ply, write_ply
 
-from vis.view_copy_aerolaser import view_points_labels
+from vis.view_copy_paris import view_points_labels
 import tqdm
 from sklearn.metrics import confusion_matrix
 import logging
 
-from confusion_matrix_plot import muestra_matriz_confusion
+from confusion_matrix_plotParis import muestra_matriz_confusion
 
 t0 = time.time()
 
 #path = Path('datasets') / 's3dis' / 'subsampled' / 'test'
-path = r'dataset_final' #r'dataset_final_pruebas_balanceo_2/'
-path = r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/train/train/procesados50000-0_1'
+path = r'' #r'dataset_final_pruebas_balanceo_2/'
+#path = r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/train/train/procesados50000-0_1'
 #no se usa esto para anda, se esta creando dentro 
 #path = r'C:/Users/sfernandez/nueva_etapa/github2/LidarSegmentationPytorch/Datasets/ParisLille/train_10metros/testFAKE/procesados50000-0_1'
 
@@ -41,7 +41,7 @@ logging.basicConfig(filename='MetricasRandLaNetParisLilleLocal10metrosprueba.log
 print('Loading model...')
 
 d_in = 3
-num_classes = 8 #14
+num_classes = 9 #14
 
 model = RandLANet(d_in, num_classes, 16, 4, device)
 #model.load_state_dict(torch.load('runs\checkpoint_374_mejor_torre_todo.pth')['model_state_dict'])  #'runs/2020-04-11_17:03/checkpoint_10.pth'
@@ -364,7 +364,7 @@ with torch.no_grad():
 #llamas a metrics.
 
 
-view_points_labels(all_original_points, all_pred_labels, all_pred_labels)
+#view_points_labels(all_original_points, all_pred_labels, all_pred_labels, diff=False)
 
 
 def label_diff(pred_label, gt_label):
@@ -381,10 +381,17 @@ def label_diff(pred_label, gt_label):
 
 diff_labels = label_diff(all_pred_labels, all_gt_labels)
 
-#diff labels
-view_points_labels(all_original_points, diff_labels, all_gt_labels, diff=True)
 
 
+
+print('View gt labels ..')
+view_points_labels(all_original_points, all_gt_labels, all_gt_labels, tipodataset=False)
+
+print('View diff labels ..')
+view_points_labels(all_original_points, diff_labels, all_gt_labels, diff=True, tipodataset=False)
+
+print('View pred labels ..')
+view_points_labels(all_original_points, all_pred_labels, all_gt_labels, tipodataset=False)
 """
 print("labels")
 print(all_pred_labels)

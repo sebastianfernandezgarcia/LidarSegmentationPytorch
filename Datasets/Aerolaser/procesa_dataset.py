@@ -79,6 +79,7 @@ if opt.split == 'train':
 
     las_dir = 'train/train/solopartidos/' #origen
     las_dir = r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/train/train/solopartidos/'
+    las_dir = r'C:/Users/sfernandez/nueva_etapa/github2/LidarSegmentationPytorch/Datasets/Aerolaser20metros/train/train/'
     #Para guardar
     if(opt.range == 0):
         save_dir = 'train/train/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + '/'
@@ -90,6 +91,7 @@ if opt.split == 'validation':
 
     las_dir = 'train/validation/solopartidos/' #origen
     las_dir = r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/train/validation/solopartidos/'
+    las_dir = r'C:/Users/sfernandez/nueva_etapa/github2/LidarSegmentationPytorch/Datasets/Aerolaser20metros/train/validation/'
 
     if(opt.range == 0):
         save_dir = 'train/validation/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + '/'
@@ -101,6 +103,7 @@ if opt.split == 'test':
 
     las_dir = 'test/solopartidos/' #origen
     las_dir = r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/test/solopartidos/'
+    las_dir = r'C:/Users/sfernandez/nueva_etapa/github2/LidarSegmentationPytorch/Datasets/Aerolaser20metros/test/'
     #las_dir = 'train/train/solopartidos/' #origen
     if(opt.range == 0):
         save_dir = 'test/procesados' + str(opt.puntos_finales) + '-' + str(opt.range) + '_' + str(opt.range+1) + '/'

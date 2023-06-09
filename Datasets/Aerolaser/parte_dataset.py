@@ -72,17 +72,17 @@ def split_dataset(output_folder):
             y_min = np.min(nuevos_puntos[:, 1])
             y_max = np.max(nuevos_puntos[:, 1])
 
-            divide_x = np.ceil((x_max - x_min) / 51).astype(int)
-            divide_y = np.ceil((y_max - y_min) / 51).astype(int)
+            divide_x = np.ceil((x_max - x_min) / 20).astype(int)
+            divide_y = np.ceil((y_max - y_min) / 20).astype(int)
 
             count = 0
             for i in range(divide_x):
                 for j in range(divide_y):
                     # Definir límites de segmento
-                    x_min_segment = x_min + i * 51
-                    x_max_segment = x_min + (i + 1) * 51
-                    y_min_segment = y_min + j * 51
-                    y_max_segment = y_min + (j + 1) * 51
+                    x_min_segment = x_min + i * 20
+                    x_max_segment = x_min + (i + 1) * 20
+                    y_min_segment = y_min + j * 20
+                    y_max_segment = y_min + (j + 1) * 20
 
                     # Filtrar puntos dentro del segmento
                     segment_points = nuevos_puntos[
@@ -139,7 +139,7 @@ def train_valid_split(source_folder):
 if __name__ == "__main__":
 
     if(opt.dataset_type == 'train'):
-        outputfolder = r'nuevaparticion/train/'
+        outputfolder = r'Aerolaser20metros/train/'
         #Create the destination folders if they don't already exist
         os.makedirs(outputfolder, exist_ok=True)
 
@@ -147,7 +147,7 @@ if __name__ == "__main__":
         train_valid_split(outputfolder)
 
     if opt.dataset_type == 'test':
-        outputfolder = r'nuevaparticion/test/'
+        outputfolder = r'Aerolaser20metros/test/'
         #Create the destination folders if they don't already exist
         os.makedirs(outputfolder, exist_ok=True)
         split_dataset(outputfolder)

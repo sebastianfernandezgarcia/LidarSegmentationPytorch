@@ -23,8 +23,10 @@ Pointnet2/paris_faketest/
 Pointnet2/siconsiguesmejorarparisborraresto.zip
 
 Datasets/Aerolaser/AerolaserProcesados16384.zip
-
+Datasets/Aerolaser/AerolaserANTESDEEXPERIMENTO10metros.zip
+Datasets/Aerolaser/Aerolaser10metros
 Datasets/Aerolaser/train/
+Datasets/Aerolaser/Aerolaser20metros
 Datasets/Aerolaser/test/
 RandLA-Net/runs/
 
