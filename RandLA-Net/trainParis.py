@@ -203,7 +203,10 @@ def train(args):
         first_epoch = checkpoint['epoch']+1
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        #scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+        scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+        
+        
+        """
         print("-__--")
         diccionario = {'gamma': 0.95, 'base_lrs': [0.1], 'last_epoch': 50, 'verbose': False, '_step_count': 51, '_get_lr_called_within_step': False, '_last_lr': [0.0000001]}
         diccionario['_last_lr'] = [0.1]
@@ -215,7 +218,7 @@ def train(args):
         #print(type(checkpoint['scheduler_state_dict']))
         #print(checkpoint['optimizer_state_dict'])
         #time.sleep(30)
-
+        """
     #with SummaryWriter(logs_dir) as writer:
     for epoch in range(first_epoch, args.epochs+1):
         print(f'=== EPOCH {epoch:d}/{args.epochs:d} ===')

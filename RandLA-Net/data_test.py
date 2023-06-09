@@ -15,7 +15,7 @@ class PointCloudsDataset(Dataset):
         #(self, root, npoints=5000, datapath='split_de_paris10clases/reduced10k/normalized'):
         self.npoints = npoints
         #self.root_dir = root_dir
-        print(self.npoints)
+        print("SELF NPOINTSSSS->>>>>", self.npoints)
         if train:
             self.root = train_dir #r'./aerolaser' #_test/ #root_dir   #root_dir
         if train == False:

@@ -21,8 +21,9 @@ from confusion_matrix_plot import muestra_matriz_confusion
 t0 = time.time()
 
 #path = Path('datasets') / 's3dis' / 'subsampled' / 'test'
-path = r'dataset_final' #r'dataset_final_pruebas_balanceo_2/'
-path = r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/train/train/procesados50000-0_1'
+#path = r'dataset_final' #r'dataset_final_pruebas_balanceo_2/'
+#path = r'C:/Users/sfernandez/nueva_etapa/github/Datasets/Aerolaser/train/train/procesados50000-0_1'
+path = r''
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 print('Loading data...')
@@ -33,7 +34,7 @@ test_loader_original = data_loaders_original(path, 'naive')
 #print(loader)
 
 # Set up logging configuration
-logging.basicConfig(filename='MetricasRandLaNet_checkpoint_967servidor.log', filemode='w', level=logging.DEBUG)
+logging.basicConfig(filename='MetricasRandLaNet_16K_VOX_579.log', filemode='w', level=logging.DEBUG)
 
 print('Loading model...')
 
@@ -42,7 +43,7 @@ num_classes = 8 #14
 
 model = RandLANet(d_in, num_classes, 16, 4, device)
 #model.load_state_dict(torch.load('runs\checkpoint_374_mejor_torre_todo.pth')['model_state_dict'])  #'runs/2020-04-11_17:03/checkpoint_10.pth'
-model.load_state_dict(torch.load('runs\checkpoint_967servidor.pth')['model_state_dict'])  #checkpoint_950_servidor
+model.load_state_dict(torch.load('runs\checkpoint_579_16k_VOX.pth')['model_state_dict'])  #checkpoint_950_servidor
 model.eval()
 
 """
