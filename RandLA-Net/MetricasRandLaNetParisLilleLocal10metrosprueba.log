@@ -4,19 +4,19 @@ INFO:root:
 INFO:root:Report de Sklearn:
 INFO:root:              precision    recall  f1-score   support
 
-           0       0.98      0.93      0.96    511056
-           1       0.84      0.94      0.89    479456
-           2       0.56      0.71      0.63     14184
-           3       0.15      0.74      0.25       334
-           4       0.23      0.28      0.25      2353
-           5       0.52      0.72      0.60     40478
+           0       0.97      0.97      0.97    511056
+           1       0.94      0.89      0.92    479456
+           2       0.75      0.83      0.79     14184
+           3       0.00      0.00      0.00       334
+           4       0.16      0.52      0.25      2353
+           5       0.57      0.84      0.67     40478
            6       0.00      0.00      0.00       797
-           7       0.73      0.95      0.83     45273
-           8       0.92      0.66      0.77    237269
+           7       0.77      0.94      0.85     45273
+           8       0.84      0.82      0.83    237269
 
-    accuracy                           0.88   1331200
-   macro avg       0.55      0.66      0.57   1331200
-weighted avg       0.89      0.88      0.88   1331200
+    accuracy                           0.91   1331200
+   macro avg       0.56      0.65      0.59   1331200
+weighted avg       0.92      0.91      0.91   1331200
 
 INFO:root:
  ------------------------------ 
@@ -25,15 +25,15 @@ INFO:root:
  ------------------------------ 
 
 INFO:root:Confusion Matrix:
-INFO:root:[[477250  23235    174    699    513   3969      0   4460    756]
- [  3638 451174   4880    112    829   7473      0    609  10741]
- [    13   3326  10111    113      5    252      0     87    277]
- [    24      0      0    248      0      0      0     62      0]
- [   155    223      7    152    650    283      0    874      9]
- [  1864   5643    509    209    124  29321      0   1691   1117]
- [    18     37     15     19     44     84      0    580      0]
- [   512    113      0     70    261   1213      0  42965    139]
- [  4731  51219   2288     52    428  14050      0   7357 157144]]
+INFO:root:[[495045   3676    296      0   1252   3431      0   4564   2792]
+ [  7143 428421   2119      0   1209   9949      0    408  30207]
+ [     7   1337  11787      0     98    421      0     61    473]
+ [    86      0      0      0    234      0      0     14      0]
+ [   173    123     37      0   1222    231      0    306    261]
+ [   389   1552    321      0    956  33847      0   1468   1945]
+ [    20     24     15      0    391     84      0    243     20]
+ [   502     30     40      0    990    740      0  42582    389]
+ [  4899  19009   1088      0   1229  11163      0   5501 194380]]
 DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
 DEBUG:PIL.PngImagePlugin:STREAM b'sBIT' 41 4
 DEBUG:PIL.PngImagePlugin:b'sBIT' 41 4 (unknown)
@@ -447,7 +447,7 @@ DEBUG:matplotlib.font_manager:findfont: score(FontEntry(fname='C:\\Windows\\Font
 DEBUG:matplotlib.font_manager:findfont: score(FontEntry(fname='C:\\Windows\\Fonts\\calibril.ttf', name='Calibri', style='normal', variant='normal', weight=300, stretch='normal', size='scalable')) = 10.145
 DEBUG:matplotlib.font_manager:findfont: score(FontEntry(fname='C:\\Windows\\Fonts\\consolab.ttf', name='Consolas', style='normal', variant='normal', weight=700, stretch='normal', size='scalable')) = 10.335
 DEBUG:matplotlib.font_manager:findfont: Matching sans\-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('C:\\Users\\sfernandez\\Anaconda3\\envs\\RandLaNetPruebas\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
-DEBUG:matplotlib.colorbar:locator: <matplotlib.ticker.AutoLocator object at 0x000001FFB82D43A0>
+DEBUG:matplotlib.colorbar:locator: <matplotlib.ticker.AutoLocator object at 0x0000016A46DC83D0>
 DEBUG:matplotlib.font_manager:findfont: Matching sans\-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0.
 DEBUG:matplotlib.font_manager:findfont: score(FontEntry(fname='C:\\Users\\sfernandez\\Anaconda3\\envs\\RandLaNetPruebas\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\cmmi10.ttf', name='cmmi10', style='normal', variant='normal', weight=400, stretch='normal', size='scalable')) = 10.05
 DEBUG:matplotlib.font_manager:findfont: score(FontEntry(fname='C:\\Users\\sfernandez\\Anaconda3\\envs\\RandLaNetPruebas\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSansMono-Bold.ttf', name='DejaVu Sans Mono', style='normal', variant='normal', weight=700, stretch='normal', size='scalable')) = 10.335
@@ -1585,53 +1585,53 @@ DEBUG:matplotlib.font_manager:findfont: Matching sans\-serif:style=normal:varian
 INFO:root:
  ------------------------------ 
 
-INFO:root:Overall Acc: 0.8780521334134616
-INFO:root:Overall mIOU: 0.46909967119519014
-INFO:root:Overall Accuracy (C/T) por clase [0.9338506934660781, 0.9410123139558166, 0.7128454596728708, 0.7425149700598802, 0.27624309392265195, 0.7243687929245516, 0.0, 0.9490203874273849, 0.6623031243019526]
-INFO:root:Overall Accuracy (F/MC) por clase [0.96637545 0.91580679 0.99102614 0.99886418 0.99706505 0.971093
- 0.99940129 0.98645733 0.93001502]
-INFO:root:Overall Precision (All classes): [0.97756066 0.84336318 0.56222198 0.14814815 0.22775053 0.51762733
-        nan 0.73212916 0.92338248]
-INFO:root:Overall Recall (All classes): [0.93385069 0.94101231 0.71284546 0.74251497 0.27624309 0.72436879
- 0.         0.94902039 0.66230312]
-INFO:root:Overall F1 Score (All classes): [0.9552059  0.88951584 0.62863715 0.24701195 0.24966391 0.60379107
-        nan 0.82658381 0.77134975]
+INFO:root:Overall Acc: 0.9069140625
+INFO:root:Overall mIOU: 0.5044506619529445
+INFO:root:Overall Accuracy (C/T) por clase [0.9686707523245984, 0.8935564473069478, 0.8310067681895094, 0.0, 0.5193370165745856, 0.8361826177182667, 0.0, 0.940560599032536, 0.8192389229102832]
+INFO:root:Overall Accuracy (F/MC) por clase [0.97804237 0.94231821 0.99525766 0.9997491  0.9943735  0.97547326
+ 0.99940129 0.98853966 0.94067308]
+INFO:root:Overall Precision (All classes): [0.97399186 0.94330122 0.7506209         nan 0.16119245 0.56537935
+        nan 0.77215442 0.84341793]
+INFO:root:Overall Recall (All classes): [0.96867075 0.89355645 0.83100677 0.         0.51933702 0.83618262
+ 0.         0.9405606  0.81923892]
+INFO:root:Overall F1 Score (All classes): [0.97132402 0.91775525 0.78877104        nan 0.24602376 0.67461931
+        nan 0.84807807 0.83115262]
 INFO:root:---------------------------
-INFO:root:Accuracy (C/T) for class Suelo: 0.9338506934660781
-INFO:root:Accuracy (F/MC) for class Suelo: 0.9663754507211538
-INFO:root:Precision for class Suelo: 0.977560655872021
-INFO:root:Recall  for class Suelo: 0.9338506934660781
-INFO:root:F1 Score for class Suelo: 0.9552058971579998
+INFO:root:Accuracy (C/T) for class Suelo: 0.9686707523245984
+INFO:root:Accuracy (F/MC) for class Suelo: 0.9780423677884615
+INFO:root:Precision for class Suelo: 0.9739918624966553
+INFO:root:Recall  for class Suelo: 0.9686707523245984
+INFO:root:F1 Score for class Suelo: 0.9713240199348584
 INFO:root:---------------------------
-INFO:root:Accuracy (C/T) for class Edificio: 0.9410123139558166
-INFO:root:Accuracy (F/MC) for class Edificio: 0.9158067908653846
-INFO:root:Precision for class Edificio: 0.8433631792436959
-INFO:root:Recall  for class Edificio: 0.9410123139558166
-INFO:root:F1 Score for class Edificio: 0.8895158444282777
+INFO:root:Accuracy (C/T) for class Edificio: 0.8935564473069478
+INFO:root:Accuracy (F/MC) for class Edificio: 0.9423182091346154
+INFO:root:Precision for class Edificio: 0.9433012162792951
+INFO:root:Recall  for class Edificio: 0.8935564473069478
+INFO:root:F1 Score for class Edificio: 0.9177552515562943
 INFO:root:---------------------------
-INFO:root:Accuracy (C/T) for class Señales: 0.7128454596728708
-INFO:root:Accuracy (F/MC) for class Señales: 0.9910261418269231
-INFO:root:Precision for class Señales: 0.562221975088968
-INFO:root:Recall  for class Señales: 0.7128454596728708
-INFO:root:F1 Score for class Señales: 0.6286371549365829
+INFO:root:Accuracy (C/T) for class Señales: 0.8310067681895094
+INFO:root:Accuracy (F/MC) for class Señales: 0.9952576622596154
+INFO:root:Precision for class Señales: 0.7506209004648793
+INFO:root:Recall  for class Señales: 0.8310067681895094
+INFO:root:F1 Score for class Señales: 0.7887710375748652
 INFO:root:---------------------------
-INFO:root:Accuracy (C/T) for class Bolardo: 0.7425149700598802
-INFO:root:Accuracy (F/MC) for class Bolardo: 0.9988641826923077
-INFO:root:Precision for class Bolardo: 0.14814814814814814
-INFO:root:Recall  for class Bolardo: 0.7425149700598802
-INFO:root:F1 Score for class Bolardo: 0.24701195219123503
+INFO:root:Accuracy (C/T) for class Bolardo: 0.0
+INFO:root:Accuracy (F/MC) for class Bolardo: 0.9997490985576923
+INFO:root:Precision for class Bolardo: nan
+INFO:root:Recall  for class Bolardo: 0.0
+INFO:root:F1 Score for class Bolardo: nan
 INFO:root:---------------------------
-INFO:root:Accuracy (C/T) for class Papelera: 0.27624309392265195
-INFO:root:Accuracy (F/MC) for class Papelera: 0.9970650540865384
-INFO:root:Precision for class Papelera: 0.22775052557813594
-INFO:root:Recall  for class Papelera: 0.27624309392265195
-INFO:root:F1 Score for class Papelera: 0.24966391396197427
+INFO:root:Accuracy (C/T) for class Papelera: 0.5193370165745856
+INFO:root:Accuracy (F/MC) for class Papelera: 0.9943734975961539
+INFO:root:Precision for class Papelera: 0.16119245482126368
+INFO:root:Recall  for class Papelera: 0.5193370165745856
+INFO:root:F1 Score for class Papelera: 0.24602375679484598
 INFO:root:---------------------------
-INFO:root:Accuracy (C/T) for class Barrier: 0.7243687929245516
-INFO:root:Accuracy (F/MC) for class Barrier: 0.971092998798077
-INFO:root:Precision for class Barrier: 0.5176273280960367
-INFO:root:Recall  for class Barrier: 0.7243687929245516
-INFO:root:F1 Score for class Barrier: 0.603791069056763
+INFO:root:Accuracy (C/T) for class Barrier: 0.8361826177182667
+INFO:root:Accuracy (F/MC) for class Barrier: 0.9754732572115384
+INFO:root:Precision for class Barrier: 0.5653793472087663
+INFO:root:Recall  for class Barrier: 0.8361826177182667
+INFO:root:F1 Score for class Barrier: 0.6746193095750618
 INFO:root:---------------------------
 INFO:root:Accuracy (C/T) for class Peaton: 0.0
 INFO:root:Accuracy (F/MC) for class Peaton: 0.9994012920673077
@@ -1639,14 +1639,14 @@ INFO:root:Precision for class Peaton: nan
 INFO:root:Recall  for class Peaton: 0.0
 INFO:root:F1 Score for class Peaton: nan
 INFO:root:---------------------------
-INFO:root:Accuracy (C/T) for class Coche: 0.9490203874273849
-INFO:root:Accuracy (F/MC) for class Coche: 0.9864573317307692
-INFO:root:Precision for class Coche: 0.7321291641816478
-INFO:root:Recall  for class Coche: 0.9490203874273849
-INFO:root:F1 Score for class Coche: 0.8265838126935877
+INFO:root:Accuracy (C/T) for class Coche: 0.940560599032536
+INFO:root:Accuracy (F/MC) for class Coche: 0.9885396634615384
+INFO:root:Precision for class Coche: 0.7721544236313852
+INFO:root:Recall  for class Coche: 0.940560599032536
+INFO:root:F1 Score for class Coche: 0.8480780720971919
 INFO:root:---------------------------
-INFO:root:Accuracy (C/T) for class Vegetación: 0.6623031243019526
-INFO:root:Accuracy (F/MC) for class Vegetación: 0.9300150240384616
-INFO:root:Precision for class Vegetación: 0.9233824765105798
-INFO:root:Recall  for class Vegetación: 0.6623031243019526
-INFO:root:F1 Score for class Vegetación: 0.7713497540814623
+INFO:root:Accuracy (C/T) for class Vegetación: 0.8192389229102832
+INFO:root:Accuracy (F/MC) for class Vegetación: 0.9406730769230769
+INFO:root:Precision for class Vegetación: 0.8434179296819068
+INFO:root:Recall  for class Vegetación: 0.8192389229102832
+INFO:root:F1 Score for class Vegetación: 0.8311526160056101

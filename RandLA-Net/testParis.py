@@ -36,7 +36,7 @@ test_loader_original = data_loaders_original(path, 'naive')
 #print(loader)
 
 # Set up logging configuration
-logging.basicConfig(filename='MetricasRandLaNetParisLilleLocal10metrosprueba.log', filemode='w', level=logging.DEBUG)
+logging.basicConfig(filename='MetricasParis10m16KVOX.log', filemode='w', level=logging.DEBUG)
 
 print('Loading model...')
 
@@ -45,7 +45,9 @@ num_classes = 9 #14
 
 model = RandLANet(d_in, num_classes, 16, 4, device)
 #model.load_state_dict(torch.load('runs\checkpoint_374_mejor_torre_todo.pth')['model_state_dict'])  #'runs/2020-04-11_17:03/checkpoint_10.pth'
-model.load_state_dict(torch.load('runsParis10metros\checkpoint_1540.pth')['model_state_dict'])  #checkpoint_950_servidor
+
+pesoModelo = r'C:\Users\sfernandez\nueva_etapa\github2\LidarSegmentationPytorch\presentacion y resultados\06-12-2023\seleccion mejores pesos Paris Lille 10 metros entrenamiento finde orla\16 voxelizado\checkpoint_2830.pth'
+model.load_state_dict(torch.load(pesoModelo)['model_state_dict'])  #checkpoint_950_servidor  #'runsParis10metros\checkpoint_1540.pth'
 model.eval()
 
 """
@@ -73,7 +75,7 @@ all_diff_labels =  np.empty((0,),  dtype=int)
 all_points = np.empty((0, 3))
 all_original_points = np.empty((0, 3))
 
-contador = 0
+#contador = 0
 print(len(test_loader_original))
 
 
@@ -180,6 +182,12 @@ class_dict = {
 """
 
 #A EVALUAR
+
+import time
+
+total_time = 0.0
+contador = 0
+
 with torch.no_grad():
 
     for points, labels, original_points in test_loader_original:
@@ -194,7 +202,18 @@ with torch.no_grad():
 
         #np_labels = labels.view(-1).numpy()
         #numpy_array = tensor.numpy()
+
+        start_time = time.time()  # Registro del tiempo de inicio
+
         scores = model(points)
+
+        end_time = time.time()  # Registro del tiempo de finalización
+        inference_time = end_time - start_time  # Cálculo del tiempo de inferencia
+
+        total_time += inference_time
+        
+
+
         predictions = torch.max(scores, dim=-2).indices
         #accuracy = (predictions == labels).float().mean()
         
@@ -223,6 +242,7 @@ with torch.no_grad():
         print(contador)
 
 
+    average_time = total_time / contador
 
     from collections import Counter
     from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score, classification_report
@@ -358,7 +378,13 @@ with torch.no_grad():
         logging.info('Recall  for class {}: {}'.format(class_dict[current_class], rec[current_class]))
         logging.info('F1 Score for class {}: {}'.format(class_dict[current_class], f1[current_class]))
 
+    print("Tiempo total de inferencias, con: ", contador, "nubes. Con ", points.shape[1],"puntos por segmento---->>>> ", total_time)
+    print("Tiempo medio por segmento de inferencia---->>>>>", average_time)
     print('Done.')
+
+    logging.info('Tiempo total de inferencias, con: {} nubes y con {} puntos/segmentos es igual a: {}'.format(contador, points.shape[1], total_time))
+    logging.info('Tiempo medio por segmento de inferencias, con: {} nubes y con {} puntos/segmentos es igual a: {}'.format(contador, points.shape[1], average_time))
+    logging.info('Done.')
 
 
 #llamas a metrics.

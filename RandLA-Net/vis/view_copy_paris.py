@@ -99,6 +99,7 @@ def pinta_mis_colores(labels):
     return Colorin
 
 def view_points(points, colors=None, gt_colors=None ):
+    
     '''
     points: np.ndarray with shape (n, 3)
     colors: [r, g, b] or np.array with shape (n, 3)
