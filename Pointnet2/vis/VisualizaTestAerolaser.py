@@ -21,10 +21,10 @@ import tqdm
 ##
 parser = argparse.ArgumentParser()
 #parser.add_argument('--dataset', type=str, choices=[r'../paris_faketest/procesados4096-0_1/', r'../aerolaser_test/'], required=True, help='esta puestoas las optiones al lado de parser')
-parser.add_argument('--dataset', type=str, default=r'../aerolaser_test/', help='Dataset que se pasa')
+parser.add_argument('--dataset', type=str, default=r'C:\Users\sfernandez\nueva_etapa\github2\LidarSegmentationPytorch\Datasets\Aerolaser\test\procesados10metros4096-0_1', help='Dataset que se pasa')
 parser.add_argument('--category', type=str, default='Airplane', help='select category')
 parser.add_argument('--npoints', type=int, default=4096, help='resample points number')
-parser.add_argument('--model', type=str, default='../checkpoint/checkpointPointnet2Aerolaser.pt', help='model path') 
+parser.add_argument('--model', type=str, default='../checkpoint/checkpoint.pt', help='model path') 
 parser.add_argument('--sample_idx', type=int, default=0, help='select a sample to segment and view result')
 
 opt = parser.parse_args()
@@ -78,7 +78,9 @@ def eval_sample(net, sample):
         points = points.transpose(1, 2).contiguous()
         points = points.to(device, dtype)
 
+
         pred = net(points)  # (batch_size, n, num_classes)
+        
         pred_label = pred.max(2)[1]
         pred_label = pred_label.view(-1).cpu()  # (n,)
         

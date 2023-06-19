@@ -27,13 +27,13 @@ import time
 
 ## Argument parser
 parser = argparse.ArgumentParser()
-parser.add_argument('--npoints', type=int, default=16384, help='resample points number') #Choose here number of point resample (if needed)
-parser.add_argument('--model', type=str, default='', help='model path') #checkpoint/checkpointParis.pt
+parser.add_argument('--npoints', type=int, default=4096, help='resample points number') #Choose here number of point resample (if needed)
+parser.add_argument('--model', type=str, default='checkpoint/checkpointFINALESPARIS.pt', help='model path') #checkpoint/checkpointParis.pt
 parser.add_argument('--nepoch', type=int, default=100, help='number of epochs to train for')
 parser.add_argument('--outf', type=str, default='checkpoint', help='output folder')
-parser.add_argument('--validation_dataset', type=str, default=r'./paris_validation/procesados4096-0_1/', help='test datasetfolder') #r'./aerolaser_validation/'
-parser.add_argument('--test_dataset', type=str, default=r'./paris_validation/procesados4096-0_1/', help='test datasetfolder') #r'./aerolaser_test/'
-parser.add_argument('--train_dataset', type=str, default=r'./paris_train/procesados4096-0_1/', help='train datasetfolder') #   r'./paris_train/procesados4096-0_1/'
+parser.add_argument('--validation_dataset', type=str, default=r'C:\Users\sfernandez\nueva_etapa\github2\LidarSegmentationPytorch\Datasets\ParisLille\train\validation\procesados4096-0_1', help='test datasetfolder') #r'./aerolaser_validation/'
+parser.add_argument('--test_dataset', type=str, default=r'C:\Users\sfernandez\nueva_etapa\github2\LidarSegmentationPytorch\Datasets\ParisLille\testFAKE\procesados4096-0_1', help='test datasetfolder') #r'./aerolaser_test/'
+parser.add_argument('--train_dataset', type=str, default=r'C:\Users\sfernandez\nueva_etapa\github2\LidarSegmentationPytorch\Datasets\ParisLille\train\train\procesados4096-0_1', help='train datasetfolder') #   r'./paris_train/procesados4096-0_1/'
 parser.add_argument('--batch_size', type=int, default=4, help='input batch size')   #Change here batchSize if needed
 parser.add_argument('--patience', type=int, default=5, help='the patience the training earlystoping will have')   #Chane patience if needed
 parser.add_argument('--num_workers', type=int, default=0, help='number of data loading workers')
@@ -238,18 +238,25 @@ def benchmark_final(net, dataloader, num_classes):
 
 
     primero = True
-
+    total_time = 0.0
+    contador = 0
     with torch.no_grad():
         for batch_idx, sample in enumerate(tqdm(dataloader)):
-
+            contador+=1
             points, labels = sample['points'], sample['labels']
 
             points = points.transpose(1, 2).contiguous()
             points = points.to(device, dtype)
 
-            # start_t = time.time()
+            start_time = time.time()  # Registro del tiempo de inicio
+
             pred = net(points) # (batch_size, n, num_classes)
-            # print('batch inference forward time used: {} ms'.format(time.time() - start_t))
+
+            end_time = time.time()  # Registro del tiempo de finalización
+            inference_time = end_time - start_time  # Cálculo del tiempo de inferencia
+
+            total_time += inference_time
+
 
             pred_label = pred.max(2)[1]
             pred_label = pred_label.cpu().numpy()
@@ -301,6 +308,8 @@ def benchmark_final(net, dataloader, num_classes):
                     part_ious.append(iou)
                 shape_ious.append(np.mean(part_ious))
 
+
+        average_time = total_time / contador
 
 
         from collections import Counter
@@ -436,6 +445,14 @@ def benchmark_final(net, dataloader, num_classes):
             logging.info('Precision for class {}: {}'.format(class_dict[current_class], prec[current_class]))
             logging.info('Recall  for class {}: {}'.format(class_dict[current_class], rec[current_class]))
             logging.info('F1 Score for class {}: {}'.format(class_dict[current_class], f1[current_class]))
+
+        print("Tiempo total de inferencias, con: ", contador, "nubes. Con ", points.shape[1],"puntos por segmento---->>>> ", total_time)
+        print("Tiempo medio por segmento de inferencia---->>>>>", average_time)
+        print('Done.')
+
+        logging.info('Tiempo total de inferencias, con: {} nubes y con {} puntos/segmentos es igual a: {}'.format(contador, points.shape[1], total_time))
+        logging.info('Tiempo medio por segmento de inferencias, con: {} nubes y con {} puntos/segmentos es igual a: {}'.format(contador, points.shape[1], average_time))
+        logging.info('Done.')
 
     print('Done.')
 

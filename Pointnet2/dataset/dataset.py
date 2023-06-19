@@ -8,11 +8,11 @@ import tqdm
 
 class Aerolaser(Dataset):
 
-    def __init__(self, train_dir=r'./aerolaser', test_dir=r'./aerolaser_validation/', train=True, transform=None, npoints=4096):
+    def __init__(self, train_dir=r'C:\Users\sfernandez\nueva_etapa\github2\LidarSegmentationPytorch\Datasets\Aerolaser\train\train\procesados4096-0_1', test_dir=r'C:\Users\sfernandez\nueva_etapa\github2\LidarSegmentationPytorch\Datasets\Aerolaser\train\validation\procesados4096-0_1', train=True, transform=None, npoints=4096):
         #(self, root, npoints=5000, datapath='split_de_paris10clases/reduced10k/normalized'):
         self.npoints = npoints
         #self.root_dir = root_dir
-        print(self.npoints)
+        print("PUNTOS A LOS QUE SE REDUCEEEE", self.npoints)
         if train:
             self.root = train_dir #r'./aerolaser' #_test/ #root_dir   #root_dir
         if train == False:
@@ -42,7 +42,7 @@ class Aerolaser(Dataset):
         choice = np.random.choice(point_set.shape[0], self.npoints, replace=True)
         points, labels = point_set[choice, :], cls[choice]
 
-        points, labels = point_set, cls  #SE ESTA OGNPRANDO EL RANDOM Y SE TRAEN PREPROCESADOS
+        points, labels = point_set, cls  #SE ESTA IGNORANDO EL RANDOM Y SE TRAEN PREPROCESADOS
         
         sample = {
             'points': points,  # torch.Tensor (n, 3)
