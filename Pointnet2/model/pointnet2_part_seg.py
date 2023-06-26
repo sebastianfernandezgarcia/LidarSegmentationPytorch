@@ -35,10 +35,7 @@ class PointNet2SAModule(torch.nn.Module):
 
 
 class PointNet2GlobalSAModule(torch.nn.Module):
-    '''
-    One group with all input points, can be viewed as a simple PointNet module.
-    It also return the only one output point(set as origin point).
-    '''
+
     def __init__(self, mlp):
         super(PointNet2GlobalSAModule, self).__init__()
         self.mlp = mlp
@@ -58,9 +55,7 @@ class PointNet2GlobalSAModule(torch.nn.Module):
 
 
 class PointConvFP(MessagePassing):
-    '''
-    Core layer of Feature propagtaion module.
-    '''
+
     def __init__(self, mlp=None):
         super().__init__(aggr='add', flow='source_to_target')
         self.mlp = mlp
