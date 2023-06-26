@@ -34,7 +34,7 @@ test_loader_original = data_loaders_original(path, 'naive')
 #print(loader)
 
 # Set up logging configuration
-logging.basicConfig(filename='MetricasAEROLASERRandLaNet_16K_VOXELIZADO230.log', filemode='w', level=logging.DEBUG)
+logging.basicConfig(filename='MetricasAEROLASERRandLaNet_50K_VOXELIZADO230.log', filemode='w', level=logging.DEBUG)
 
 print('Loading model...')
 
@@ -43,7 +43,7 @@ num_classes = 8 #14
 
 model = RandLANet(d_in, num_classes, 16, 4, device)
 #model.load_state_dict(torch.load('runs\checkpoint_374_mejor_torre_todo.pth')['model_state_dict'])  #'runs/2020-04-11_17:03/checkpoint_10.pth'
-model.load_state_dict(torch.load(r'C:\Users\sfernandez\nueva_etapa\github2\LidarSegmentationPytorch\presentacion y resultados\06-19-2023\mejores pesos randlanet aeurolaser a 20 metros\16k vox\checkpoint_225.pth')['model_state_dict'])  #checkpoint_950_servidor    'runs\checkpoint_1215_random16K.pth'
+model.load_state_dict(torch.load(r'C:\Users\sfernandez\nueva_etapa\github2\LidarSegmentationPytorch\presentacion y resultados\06-26-2023\checkpoint_138_50K.pth')['model_state_dict'])  #checkpoint_950_servidor    'runs\checkpoint_1215_random16K.pth'
 model.eval()
 
 """
@@ -381,11 +381,8 @@ with torch.no_grad():
 
 view_points_labels(all_original_points, all_pred_labels, all_pred_labels)
 
-
 def label_diff(pred_label, gt_label):
-    '''
-    Assign 1 if different label, or 0 if same label  
-    '''
+
     diff = pred_label - gt_label
     diff_mask = (diff != 0)
 
@@ -396,7 +393,7 @@ def label_diff(pred_label, gt_label):
 
 diff_labels = label_diff(all_pred_labels, all_gt_labels)
 
-#diff labels
+
 view_points_labels(all_original_points, diff_labels, all_gt_labels, diff=True)
 
 

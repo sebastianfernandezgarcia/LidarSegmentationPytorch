@@ -99,11 +99,7 @@ def pinta_mis_colores(labels):
     return Colorin
 
 def view_points(points, colors=None, gt_colors=None ):
-    '''
-    points: np.ndarray with shape (n, 3)
-    colors: [r, g, b] or np.array with shape (n, 3)
-    '''
-    #Estaría interesante crear un toggle de visualizacion con el gt y el color
+
     cloud = o3d.geometry.PointCloud()
     cloud.points = o3d.utility.Vector3dVector(points) 
 
@@ -114,15 +110,8 @@ def view_points(points, colors=None, gt_colors=None ):
 
     o3d.visualization.draw_geometries([cloud])
     
-
-
-
-
 def label2color(labels, diff,tipodataset):
-    '''
-    labels: np.ndarray with shape (n, )
-    colors(return): np.ndarray with shape (n, 3)
-    '''
+
     num = labels.shape[0]
     colors = np.zeros((num, 3))
 
@@ -132,32 +121,12 @@ def label2color(labels, diff,tipodataset):
 
     return colors
 
-
 def view_points_labels(points, labels, groundtruth, tipodataset, diff=False):
-    '''
-    Assign points with colors by labels and view colored points.
-    points: np.ndarray with shape (n, 3)
-    labels: np.ndarray with shape (n, 1), dtype=np.int32
-    '''
 
-    #print("-------")
-    #print("-------")
-    #import time
-    #time.sleep(5)
-    #print(points)
-    #print(points.shape)
-    #print("------")
-    #print(labels)
-    #print(labels.shape)
-
-    #time.sleep(599)
     assert points.shape[0] == labels.shape[0]
     assert points.shape[0] == groundtruth.shape[0]
 
     ground_truth_colors = label2color(groundtruth, diff,tipodataset)
     colors = label2color(labels, diff,tipodataset)
-    #mis_colores = pinta_mis_colores(labels)
 
     view_points(points, colors, ground_truth_colors)
-
-#se le ha puesto para mostrar las diff, pasando un param mas que es diff, y tambien gorund trurth es nuevo

@@ -22,10 +22,8 @@ from confusion_matrix_plotParis import muestra_matriz_confusion
 import logging
 from pytorchtools import EarlyStopping
 from tqdm import tqdm                                                                                                
-
 import time 
 
-## Argument parser
 parser = argparse.ArgumentParser()
 parser.add_argument('--npoints', type=int, default=4096, help='resample points number') #Choose here number of point resample (if needed)
 parser.add_argument('--model', type=str, default='checkpoint/checkpointFINALESPARIS.pt', help='model path') #checkpoint/checkpointParis.pt
@@ -38,7 +36,6 @@ parser.add_argument('--batch_size', type=int, default=4, help='input batch size'
 parser.add_argument('--patience', type=int, default=5, help='the patience the training earlystoping will have')   #Chane patience if needed
 parser.add_argument('--num_workers', type=int, default=0, help='number of data loading workers')
 parser.add_argument('--behaviour', type=str, choices = ('trainval', 'test'), default='trainval', help='what you want to do')
-#if you set behaviour to test, make sure to give model, dataset folder... check batchSize..
 opt = parser.parse_args()
 print(opt)
 
@@ -141,50 +138,32 @@ def DatasetandTrainingConfiguration(train_dataset_dir, validation_dataset_dir, t
     return dataloader, validation_dataloader, test_dataloader, criterion, optimizer, blue, device, dtype, num_batch, num_classes, net
 
 def Train(net, dataloader, device, dtype, optimizer, num_classes, num_batch, validation_dataloader, patience):
-
     early_stopping = EarlyStopping(patience, verbose=True)
-
     for epoch in range(opt.nepoch):
         print('Epoch {}, total epoches {}'.format(epoch+1, opt.nepoch))
-
         net.train()
-
         for batch_idx, sample in enumerate(dataloader):
-
             points, labels = sample['points'], sample['labels']
-
             points = points.transpose(1, 2).contiguous()  # (batch_size, 3, n)
             points, labels = points.to(device, dtype), labels.to(device, torch.long)
-
             optimizer.zero_grad()
-
-            pred = net(points)  # (batch_size, n, num_classes)
-            
-            #print(pred.shape)
-            #print(pred)
-            pred = pred.view(-1, num_classes)  # (batch_size * n, num_classes) 
+            pred = net(points)  
+            pred = pred.view(-1, num_classes) 
             target = labels.view(-1, 1)[:, 0]
-
             loss = F.nll_loss(pred, target)
             loss.backward()
-
             optimizer.step()
-
             pred_label = pred.detach().max(1)[1] 
             correct = pred_label.eq(target.detach()).cpu().sum()
             total = pred_label.shape[0]
-
             print('[{}: {}/{}] train loss: {} accuracy: {}'.format(epoch, batch_idx, num_batch, loss.item(), float(correct.item())/total))
-
         val_loss = training_eval(epoch)
-        early_stopping(val_loss, net) # check if the validation loss has stopped improving
-        
+        early_stopping(val_loss, net) #check if the validation loss has stopped improving
         if early_stopping.early_stop:
             print("Early stopping")
             break
 
 def training_eval(epoch):
-    #Eval for each epoch
     net.eval()
     with torch.no_grad():
         correct = 0
@@ -203,13 +182,16 @@ def training_eval(epoch):
             total += target.shape[0]
         val_loss /= total
         accuracy = correct / total
-
         print('[Epoch {}] Validation Loss: {:.4f} Validation Accuracy: {:.4f}'.format(epoch, val_loss, accuracy))
         logging.info('[Epoch {}] Validation Loss: {:.4f} Validation Accuracy: {:.4f}'.format(epoch, val_loss, accuracy))  
-
         return val_loss 
-        #torch.save(net.state_dict(), '{}/seg_model_{}_{}.pth'.format(opt.outf, "aerolaser_pesos", epoch)) #model saves inside early_stipping if model is better that last epoch
+    
 
+
+
+
+
+        #torch.save(net.state_dict(), '{}/seg_model_{}_{}.pth'.format(opt.outf, "aerolaser_pesos", epoch)) #model saves inside early_stipping if model is better that last epoch
 
 def benchmark_final(net, dataloader, num_classes):
     #BenchMark (Confusion Matrix, mIOU)
@@ -238,22 +220,25 @@ def benchmark_final(net, dataloader, num_classes):
 
 
     primero = True
+
     total_time = 0.0
     contador = 0
+
+
     with torch.no_grad():
-        for batch_idx, sample in enumerate(tqdm(dataloader)):
+        for _, sample in enumerate(tqdm(dataloader)):
             contador+=1
             points, labels = sample['points'], sample['labels']
 
             points = points.transpose(1, 2).contiguous()
             points = points.to(device, dtype)
 
-            start_time = time.time()  # Registro del tiempo de inicio
+            start_time = time.time()  
 
-            pred = net(points) # (batch_size, n, num_classes)
+            pred = net(points) 
 
-            end_time = time.time()  # Registro del tiempo de finalización
-            inference_time = end_time - start_time  # Cálculo del tiempo de inferencia
+            end_time = time.time()  
+            inference_time = end_time - start_time  
 
             total_time += inference_time
 
@@ -457,18 +442,6 @@ def benchmark_final(net, dataloader, num_classes):
     print('Done.')
 
 def metrics(cm):
-    """
-    def accuracy_por_clase(cm):
-        tp = np.diag(cm)
-        fp = np.sum(cm, axis=0) - tp
-        tn = np.sum(cm) - np.sum(cm, axis=0) - np.sum(cm, axis=1) + np.diag(cm)
-        fn = np.sum(cm, axis=1) - np.diag(cm)
-
-        acc = (tp+tn)/(tp+tn+fp+fn)
-
-        return acc
-        #Exactitud = (TP + TN) / (TP + TN + FP + FN)
-    """
     def accuracy(cm):
         return np.trace(cm) / np.sum(cm)
 
@@ -479,29 +452,11 @@ def metrics(cm):
         tn = np.sum(cm) - np.sum(cm, axis=0) - np.sum(cm, axis=1) + np.diag(cm)
         return (tp + tn) / (tp + tn + fp + fn)
     
-    
     def precision(cm):
-        """
-        num_classes = cm.shape[0]
-        precisions = []
 
-        for i in range(num_classes):
-            TP = cm[i, i]
-            FP = np.sum(cm[:, i]) - TP
-            precision = TP / (TP + FP)
-            precisions.append(precision)
-
-        print("Precision for each class:")
-        for i, precision in enumerate(precisions):
-            print(f"Class {i}: {precision}")
-
-        time.sleep(30)
-        """
-        
         tp = np.diag(cm)
         fp = np.sum(cm, axis=0) - tp
-        return tp / (tp + fp)
-        
+        return tp / (tp + fp) 
 
     def recall(cm):
         tp = np.diag(cm)
@@ -526,33 +481,30 @@ def metrics(cm):
     def mean_iou(cm):
         ious = iou(cm)
         return np.mean(ious)
-    
-    #acc_per_class = accuracy_por_clase(cm)
+
     acc = accuracy(cm)
     precision_matrix = precision(cm)
     recall_matrix = recall(cm)
     f1 = f1_score(cm)
     miou = mean_iou(cm)
     acc_con_formula = accuracy_formula(cm)
-    #print("Accuracy:", acc)
-    #print("Precision:", prec)
-    #print("Recall:", rec)
-    #print("F1 score:", f1)
-    #print("mIoU:", miou)
+
     return acc_con_formula, acc, precision_matrix, recall_matrix, f1, miou
 
 if __name__ == "__main__":
 
     setSeeds()
-    dataloader, validation_dataloader, test_dataloader, criterion, optimizer, blue, device, dtype, num_batch, num_classes, net = DatasetandTrainingConfiguration(opt.train_dataset, opt.validation_dataset, opt.test_dataset)
+    dataloader, validation_dataloader, test_dataloader, criterion, optimizer, blue, device, dtype, num_batch, num_classes, net = DatasetandTrainingConfiguration(opt.train_dataset,
+                                                                                                                                                                 opt.validation_dataset, 
+                                                                                                                                                                 opt.test_dataset)
 
     if opt.behaviour == 'trainval':
         Train(net, dataloader, device, dtype, optimizer, num_classes, num_batch, validation_dataloader, opt.patience)
-        benchmark_final(net, test_dataloader, num_classes) #antes se estaba pasando el validation, con el nuevo cambio esto es test
+        benchmark_final(net, test_dataloader, num_classes) 
 
     if opt.behaviour == 'test':
 
         test_net = PointNet2PartSegmentNet(num_classes)
         test_net.load_state_dict(torch.load(opt.model))
         test_net = net.to(device, dtype)
-        benchmark_final(test_net, test_dataloader, num_classes) #test_dataloader
+        benchmark_final(test_net, test_dataloader, num_classes) 
