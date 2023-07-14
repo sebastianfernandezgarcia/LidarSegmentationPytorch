@@ -10,6 +10,8 @@ Este repositorio de **GitHub** tiene como finalidad alojar parte del código des
 
 2. *Datasets/Aerolaser/procesa_dataset.py* -> Toma las nubes .npy particionadas y las normaliza, escala y voxeliza con parámetros designados. Puede normalizar entre 0 y 1, entre -1 y 1 y voxeliza con tamaño voxel 1 (ajustable) y modifica para poder guardar más de un punto por voxel hasta llegar a los puntos designados. Es necesario ejecutarlo sobre train, validation y test por separado. En test, el procesamiento es diferente porque guarda las transformaciones de las coordenadas para poder volver a las originales.
 
+3. Los datasets no se encuentran en este repositorio al ser de uso privado e internos de la empresa colaboradora. Para hacer uso de ellos, contactar.
+   
 **🔧ENVIRONMENTS**
 1. Contiene la exportación de los entornos con todos los paquetes usados. Con la sencilla orden de instalación, deja el entorno listo.
 
